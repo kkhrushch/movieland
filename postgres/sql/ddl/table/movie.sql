@@ -4,9 +4,9 @@ CREATE TABLE movie
 , original_name           text      NOT NULL
 , year                    integer   NOT NULL
 , country                 text      NOT NULL
-, movie_genre_id          bigint    NOT NULL
 , description             text      NOT NULL
+, rating                  numeric
 , price                   numeric   NOT NULL
-, poster_url              text      NOT NULL
+, poster_url              text
 )
 ;
