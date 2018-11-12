@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -64,6 +63,7 @@ public class MovieControllerITest {
         String expectedJson = mapper.writeValueAsString(getTestMovies());
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+        verify(movieService, times(1)).getAll();
     }
 
     private List<Movie> getTestMovies() {
