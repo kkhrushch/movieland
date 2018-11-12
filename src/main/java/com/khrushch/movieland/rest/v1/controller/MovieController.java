@@ -13,7 +13,7 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/movie")
-    public List<Movie> getAll(){
+    public List<Movie> getAll() {
         return movieService.getAll();
     }
 
