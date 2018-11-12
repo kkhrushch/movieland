@@ -1,7 +1,6 @@
 package com.khrushch.movieland.dao.jdbc.mapper;
 
 import com.khrushch.movieland.model.Movie;
-
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
