@@ -66,6 +66,31 @@ public class MovieControllerITest {
         verify(movieService, times(1)).getAll();
     }
 
+    @Test
+    public void testGetRandomMovies() throws Exception {
+        // Verify that controller returns results from service precisely
+
+        MovieService movieService = mock(MovieService.class);
+        when(movieService.getRandomMovies()).thenReturn(getTestMovies());
+
+        MovieController movieController = wac.getBean(MovieController.class);
+        movieController.setMovieService(movieService);
+
+        MvcResult mvcResult = mockMvc.perform(get("/movie/random"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String actualJson = mvcResult.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String expectedJson = mapper.writeValueAsString(getTestMovies());
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+        verify(movieService, times(1)).getRandomMovies();
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);

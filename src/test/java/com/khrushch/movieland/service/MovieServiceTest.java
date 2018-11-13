@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -25,6 +27,24 @@ public class MovieServiceTest {
 
         verify(movieDao, times(1)).getAll();
         assertEquals(getTestMovies(), actualMovies);
+    }
+
+    @Test
+    public void getRandomMovies() {
+        List<Movie> mockMovies = Stream.generate(Movie::new)
+                .limit(20)
+                .collect(Collectors.toList());
+
+        MovieDao movieDao = mock(MovieDao.class);
+        when(movieDao.getAll()).thenReturn(mockMovies);
+
+        MovieService movieService = new MovieService();
+        movieService.setMovieDao(movieDao);
+
+        List<Movie> actualMovies = movieService.getRandomMovies();
+
+        assertEquals(3, actualMovies.size());
+        verify(movieDao, times(1)).getAll();
     }
 
     private List<Movie> getTestMovies() {
@@ -48,4 +68,5 @@ public class MovieServiceTest {
 
         return new ArrayList<>(Arrays.asList(first, second));
     }
+
 }
