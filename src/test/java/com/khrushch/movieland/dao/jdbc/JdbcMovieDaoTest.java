@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class JdbcMovieDaoTest {
     @Test
-    public void testGetAll(){
+    public void testGetAll() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
         JdbcMovieDao jdbcMovieDao = new JdbcMovieDao();
