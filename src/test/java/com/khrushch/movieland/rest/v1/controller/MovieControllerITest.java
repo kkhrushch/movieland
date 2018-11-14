@@ -6,12 +6,14 @@ import com.khrushch.movieland.model.Movie;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.comparator.ArraySizeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -50,7 +52,7 @@ public class MovieControllerITest {
     @Test
     public void testGetAll() throws Exception {
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
-        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper)).thenReturn(getTestMovies());
+        when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Movie>>any())).thenReturn(getTestMovies());
 
         JdbcMovieDao jdbcMovieDao = wac.getBean(JdbcMovieDao.class);
         jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
@@ -67,7 +69,7 @@ public class MovieControllerITest {
         String expectedJson = mapper.writeValueAsString(getTestMovies());
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper);
+        verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Movie>>any());
     }
 
     @Test
@@ -76,7 +78,7 @@ public class MovieControllerITest {
                 .limit(20)
                 .collect(Collectors.toList());
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
-        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper)).thenReturn(mockMovies);
+        when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Movie>>any())).thenReturn(mockMovies);
 
         JdbcMovieDao jdbcMovieDao = wac.getBean(JdbcMovieDao.class);
         jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
@@ -90,7 +92,7 @@ public class MovieControllerITest {
         String actualJson = mvcResult.getResponse().getContentAsString();
 
         JSONAssert.assertEquals("[3]", actualJson, new ArraySizeComparator(JSONCompareMode.LENIENT));
-        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper);
+        verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Movie>>any());
     }
 
     private List<Movie> getTestMovies() {
