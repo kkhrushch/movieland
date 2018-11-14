@@ -124,5 +124,19 @@ public class Movie {
         return getPicturePath() != null ? getPicturePath().equals(movie.getPicturePath()) : movie.getPicturePath() == null;
     }
 
-
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id=" + id +
+                ", russianName='" + russianName + '\'' +
+                ", nativeName='" + nativeName + '\'' +
+                ", yearOfRelease=" + yearOfRelease +
+                ", genres=" + genres +
+                ", countryOfOrigin='" + countryOfOrigin + '\'' +
+                ", description='" + description + '\'' +
+                ", rating=" + rating +
+                ", price=" + price +
+                ", picturePath='" + picturePath + '\'' +
+                '}';
+    }
 }
