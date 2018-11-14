@@ -4,6 +4,7 @@ import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,8 +19,13 @@ public class MovieController {
     }
 
     @GetMapping("/movie/random")
-    public List<Movie> getRandomMovies() {
-        return movieService.getRandomMovies();
+    public List<Movie> getRandom() {
+        return movieService.getRandom();
+    }
+
+    @GetMapping("/movie/genre/{genreId}")
+    public List<Movie> getByGenreId(@PathVariable long genreId){
+        return movieService.getByGenreId(genreId);
     }
 
     @Autowired

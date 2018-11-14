@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class MovieControllerTest {
 
     @Test
-    public void getAll() {
+    public void testGetAll() {
         MovieService mockMovieService = mock(MovieService.class);
         when(mockMovieService.getAll()).thenReturn(getTestMovies());
 
@@ -28,19 +28,35 @@ public class MovieControllerTest {
     }
 
     @Test
-    public void getRandomMovies() {
+    public void testGetRandomMovies() {
         // Verify that controller returns result from service "as is"
 
         MovieService mockMovieService = mock(MovieService.class);
-        when(mockMovieService.getRandomMovies()).thenReturn(getTestMovies());
+        when(mockMovieService.getRandom()).thenReturn(getTestMovies());
 
         MovieController movieController = new MovieController();
         movieController.setMovieService(mockMovieService);
 
-        List<Movie> actualMovies = mockMovieService.getRandomMovies();
+        List<Movie> actualMovies = mockMovieService.getRandom();
 
         assertEquals(getTestMovies(), actualMovies);
-        verify(mockMovieService, times(1)).getRandomMovies();
+        verify(mockMovieService, times(1)).getRandom();
+    }
+
+    @Test
+    public void testGetByGenreId(){
+        // Verify that controller returns result from service "as is"
+
+        MovieService mockMovieService = mock(MovieService.class);
+        when(mockMovieService.getByGenreId(1)).thenReturn(getTestMovies());
+
+        MovieController movieController = new MovieController();
+        movieController.setMovieService(mockMovieService);
+
+        List<Movie> actualMovies = mockMovieService.getByGenreId(1);
+
+        assertEquals(getTestMovies(), actualMovies);
+        verify(mockMovieService, times(1)).getByGenreId(1);
     }
 
     private List<Movie> getTestMovies() {
