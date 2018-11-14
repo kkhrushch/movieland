@@ -11,7 +11,7 @@ public class Movie {
     private int yearOfRelease;
 
     @JsonIgnore
-    private List<String> genres;
+    private List<Genre> genres;
     @JsonIgnore
     private String countryOfOrigin;
     @JsonIgnore
@@ -33,7 +33,7 @@ public class Movie {
         return nativeName;
     }
 
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
@@ -73,7 +73,7 @@ public class Movie {
         this.nativeName = nativeName;
     }
 
-    public void setGenres(List<String> genres) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
