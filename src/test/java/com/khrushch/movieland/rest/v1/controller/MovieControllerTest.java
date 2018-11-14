@@ -1,50 +1,46 @@
-package com.khrushch.movieland.service;
+package com.khrushch.movieland.rest.v1.controller;
 
-import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.service.MovieService;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class MovieServiceTest {
+public class MovieControllerTest {
 
     @Test
-    public void testGetAll() {
-        MovieDao mockMovieDao = mock(MovieDao.class);
-        MovieService movieService = new MovieService();
-        movieService.setMovieDao(mockMovieDao);
+    public void getAll() {
+        MovieService mockMovieService = mock(MovieService.class);
+        when(mockMovieService.getAll()).thenReturn(getTestMovies());
 
-        when(mockMovieDao.getAll()).thenReturn(getTestMovies());
+        MovieController movieController = new MovieController();
+        movieController.setMovieService(mockMovieService);
 
-        List<Movie> actualMovies = movieService.getAll();
+        List<Movie> actualMovies = mockMovieService.getAll();
 
-        verify(mockMovieDao, times(1)).getAll();
         assertEquals(getTestMovies(), actualMovies);
+        verify(mockMovieService, times(1)).getAll();
     }
 
     @Test
     public void getRandomMovies() {
-        List<Movie> mockMovies = Stream.generate(Movie::new)
-                .limit(20)
-                .collect(Collectors.toList());
+        // Verify that controller returns result from service "as is"
 
-        MovieDao mockMovieDao = mock(MovieDao.class);
-        when(mockMovieDao.getAll()).thenReturn(mockMovies);
+        MovieService mockMovieService = mock(MovieService.class);
+        when(mockMovieService.getRandomMovies()).thenReturn(getTestMovies());
 
-        MovieService movieService = new MovieService();
-        movieService.setMovieDao(mockMovieDao);
+        MovieController movieController = new MovieController();
+        movieController.setMovieService(mockMovieService);
 
-        List<Movie> actualMovies = movieService.getRandomMovies();
+        List<Movie> actualMovies = mockMovieService.getRandomMovies();
 
-        assertEquals(3, actualMovies.size());
-        verify(mockMovieDao, times(1)).getAll();
+        assertEquals(getTestMovies(), actualMovies);
+        verify(mockMovieService, times(1)).getRandomMovies();
     }
 
     private List<Movie> getTestMovies() {
