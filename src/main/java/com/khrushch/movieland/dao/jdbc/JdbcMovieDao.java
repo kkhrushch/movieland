@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
-    // package visibility for tests
-    static final String SELECT_ALL_MOVIES_SQL = "SELECT id, name, original_name, year, rating, price, poster_url FROM movie";
-    static final RowMapper<Movie> movieRowMapper = new MovieRowMapper();
+    // visibility for tests
+    public static final String SELECT_ALL_MOVIES_SQL = "SELECT id, name, original_name, year, rating, price, poster_url FROM movie";
+    public static final RowMapper<Movie> movieRowMapper = new MovieRowMapper();
 
     private JdbcTemplate jdbcTemplate;
 
