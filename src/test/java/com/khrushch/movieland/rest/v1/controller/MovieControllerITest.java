@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +74,7 @@ public class MovieControllerITest {
     }
 
     @Test
-    public void testGetRandomMovies() throws Exception {
+    public void testGetRandom() throws Exception {
         List<Movie> mockMovies = Stream.generate(Movie::new)
                 .limit(20)
                 .collect(Collectors.toList());
@@ -93,6 +94,29 @@ public class MovieControllerITest {
 
         JSONAssert.assertEquals("[3]", actualJson, new ArraySizeComparator(JSONCompareMode.LENIENT));
         verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Movie>>any());
+    }
+
+    @Test
+    public void testGetByGenreId() throws Exception {
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Movie>>any(), anyLong())).thenReturn(getTestMovies());
+
+        JdbcMovieDao jdbcMovieDao = wac.getBean(JdbcMovieDao.class);
+        jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
+
+        MvcResult mvcResult = mockMvc.perform(get("/movie/genre/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String actualJson = mvcResult.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String expectedJson = mapper.writeValueAsString(getTestMovies());
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+        verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Movie>>any(), anyLong());
     }
 
     private List<Movie> getTestMovies() {

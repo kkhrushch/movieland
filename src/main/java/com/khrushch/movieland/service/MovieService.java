@@ -25,13 +25,20 @@ public class MovieService {
         return movies;
     }
 
-    public List<Movie> getRandomMovies() {
+    public List<Movie> getRandom() {
         List<Movie> allMovies = movieDao.getAll();
 
         List<Movie> movies = random.ints(NUMBER_OF_RANDOM_MOVIES, 0, allMovies.size())
                 .mapToObj(allMovies::get)
                 .collect(Collectors.toList());
+
         logger.debug("Fetched random movies: {}", movies);
+        return movies;
+    }
+
+    public List<Movie> getByGenreId(long genreId){
+        List<Movie> movies = movieDao.getByGenreId(genreId);
+        logger.debug("Fetched movies by genreId {}: {}", genreId, movies);
         return movies;
     }
 

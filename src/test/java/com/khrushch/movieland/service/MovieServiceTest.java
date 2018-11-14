@@ -30,7 +30,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void getRandomMovies() {
+    public void testGetRandomMovies() {
         List<Movie> mockMovies = Stream.generate(Movie::new)
                 .limit(20)
                 .collect(Collectors.toList());
@@ -41,10 +41,24 @@ public class MovieServiceTest {
         MovieService movieService = new MovieService();
         movieService.setMovieDao(mockMovieDao);
 
-        List<Movie> actualMovies = movieService.getRandomMovies();
+        List<Movie> actualMovies = movieService.getRandom();
 
         assertEquals(3, actualMovies.size());
         verify(mockMovieDao, times(1)).getAll();
+    }
+
+    @Test
+    public void testGetByGenreId(){
+        MovieDao mockMovieDao = mock(MovieDao.class);
+        when(mockMovieDao.getByGenreId(1)).thenReturn(getTestMovies());
+
+        MovieService movieService = new MovieService();
+        movieService.setMovieDao(mockMovieDao);
+
+        List<Movie> actualMovies = movieService.getByGenreId(1);
+
+        verify(mockMovieDao, times(1)).getByGenreId(1);
+        assertEquals(getTestMovies(), actualMovies);
     }
 
     private List<Movie> getTestMovies() {

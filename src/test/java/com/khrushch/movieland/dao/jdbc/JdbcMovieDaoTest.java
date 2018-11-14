@@ -2,7 +2,9 @@ package com.khrushch.movieland.dao.jdbc;
 
 import com.khrushch.movieland.model.Movie;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,20 @@ public class JdbcMovieDaoTest {
         List<Movie> actualMovies = jdbcMovieDao.getAll();
 
         verify(jdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper);
+        assertEquals(getTestMovies(), actualMovies);
+    }
+
+    @Test
+    public void testGetByGenreId(){
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_MOVIES_BY_GENRE_ID, JdbcMovieDao.movieRowMapper, 1L)).thenReturn(getTestMovies());
+
+        JdbcMovieDao jdbcMovieDao = new JdbcMovieDao();
+        jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
+
+        List<Movie> actualMovies = jdbcMovieDao.getByGenreId(1L);
+
+        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_MOVIES_BY_GENRE_ID, JdbcMovieDao.movieRowMapper, 1L);
         assertEquals(getTestMovies(), actualMovies);
     }
 
