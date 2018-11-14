@@ -1,15 +1,17 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khrushch.movieland.dao.jdbc.JdbcMovieDao;
 import com.khrushch.movieland.model.Movie;
-import com.khrushch.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.ArraySizeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -21,6 +23,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,11 +49,11 @@ public class MovieControllerITest {
 
     @Test
     public void testGetAll() throws Exception {
-        MovieService movieService = mock(MovieService.class);
-        when(movieService.getAll()).thenReturn(getTestMovies());
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper)).thenReturn(getTestMovies());
 
-        MovieController movieController = wac.getBean(MovieController.class);
-        movieController.setMovieService(movieService);
+        JdbcMovieDao jdbcMovieDao = wac.getBean(JdbcMovieDao.class);
+        jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
 
         MvcResult mvcResult = mockMvc.perform(get("/movie"))
                 .andDo(print())
@@ -63,18 +67,19 @@ public class MovieControllerITest {
         String expectedJson = mapper.writeValueAsString(getTestMovies());
 
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        verify(movieService, times(1)).getAll();
+        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper);
     }
 
     @Test
     public void testGetRandomMovies() throws Exception {
-        // Verify that controller returns results from service precisely
+        List<Movie> mockMovies = Stream.generate(Movie::new)
+                .limit(20)
+                .collect(Collectors.toList());
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper)).thenReturn(mockMovies);
 
-        MovieService movieService = mock(MovieService.class);
-        when(movieService.getRandomMovies()).thenReturn(getTestMovies());
-
-        MovieController movieController = wac.getBean(MovieController.class);
-        movieController.setMovieService(movieService);
+        JdbcMovieDao jdbcMovieDao = wac.getBean(JdbcMovieDao.class);
+        jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
 
         MvcResult mvcResult = mockMvc.perform(get("/movie/random"))
                 .andDo(print())
@@ -84,11 +89,8 @@ public class MovieControllerITest {
 
         String actualJson = mvcResult.getResponse().getContentAsString();
 
-        ObjectMapper mapper = new ObjectMapper();
-        String expectedJson = mapper.writeValueAsString(getTestMovies());
-
-        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
-        verify(movieService, times(1)).getRandomMovies();
+        JSONAssert.assertEquals("[3]", actualJson, new ArraySizeComparator(JSONCompareMode.LENIENT));
+        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.movieRowMapper);
     }
 
     private List<Movie> getTestMovies() {
