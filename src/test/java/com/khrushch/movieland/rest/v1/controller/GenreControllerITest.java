@@ -3,6 +3,7 @@ package com.khrushch.movieland.rest.v1.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dao.jdbc.JdbcGenreDao;
 import com.khrushch.movieland.model.Genre;
+import com.khrushch.movieland.service.GenreCacheService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:test-applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
 @WebAppConfiguration
 public class GenreControllerITest {
     private MockMvc mockMvc;
@@ -52,6 +54,13 @@ public class GenreControllerITest {
 
         JdbcGenreDao jdbcGenreDao = wac.getBean(JdbcGenreDao.class);
         jdbcGenreDao.setJdbcTemplate(mockJdbcTemplate);
+
+        // invoke cache refresh
+        GenreCacheService genreCacheService = wac.getBean(GenreCacheService.class);
+        Method method = GenreCacheService.class.getDeclaredMethod("refreshCache");
+        method.setAccessible(true);
+        method.invoke(genreCacheService);
+        method.setAccessible(false);
 
         MvcResult mvcResult = mockMvc.perform(get("/genre"))
                 .andDo(print())
