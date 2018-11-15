@@ -2,9 +2,7 @@ package com.khrushch.movieland.dao.jdbc;
 
 import com.khrushch.movieland.model.Movie;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
