@@ -1,12 +1,12 @@
 package com.khrushch.movieland.config;
 
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
@@ -31,11 +31,11 @@ public class DaoConfig {
     }
 
     private DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverClassName);
+        BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(url);
         dataSource.setUsername(user);
         dataSource.setPassword(pass);
+
         return dataSource;
     }
 

@@ -1,6 +1,5 @@
 package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.junit.Test;
 
@@ -15,15 +14,15 @@ public class GenreServiceTest {
 
     @Test
     public void getAll() {
-        GenreDao mockGenreDao = mock(GenreDao.class);
-        when(mockGenreDao.getAll()).thenReturn(getTestGenres());
+        GenreCacheService mockGenreCacheService = mock(GenreCacheService.class);
+        when(mockGenreCacheService.getAll()).thenReturn(getTestGenres());
 
         GenreService genreService = new GenreService();
-        genreService.setGenreDao(mockGenreDao);
+        genreService.setCacheService(mockGenreCacheService);
 
         List<Genre> actualGenres = genreService.getAll();
 
-        verify(mockGenreDao, times(1)).getAll();
+        verify(mockGenreCacheService, times(1)).getAll();
         assertEquals(getTestGenres(), actualGenres);
     }
 

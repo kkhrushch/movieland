@@ -1,6 +1,5 @@
 package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +12,16 @@ import java.util.List;
 public class GenreService {
     private Logger logger = LoggerFactory.getLogger(GenreService.class);
 
-    private GenreDao genreDao;
+    private GenreCacheService cacheService;
 
     public List<Genre> getAll() {
-        List<Genre> genres = genreDao.getAll();
+        List<Genre> genres = cacheService.getAll();
         logger.debug("Fetched genres: {}", genres);
         return genres;
     }
 
     @Autowired
-    public void setGenreDao(GenreDao genreDao) {
-        this.genreDao = genreDao;
+    public void setCacheService(GenreCacheService cacheService) {
+        this.cacheService = cacheService;
     }
 }
