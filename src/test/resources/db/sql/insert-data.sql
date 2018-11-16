@@ -1,0 +1,1 @@
+insert into role_permission values(1, 'USER', 'http://')
