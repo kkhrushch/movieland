@@ -15,11 +15,11 @@ public class JdbcMovieDao implements MovieDao {
     // visibility for tests
     static final String SELECT_ALL_MOVIES_SQL = "SELECT id, name, original_name, year, rating, price, poster_url FROM movie";
     static final String SELECT_MOVIES_BY_GENRE_ID = "" +
-            "SELECT m.id, m.name, m.original_name, m.year, m.rating, m.price, m.poster_url\n" +
-            "  FROM movie          m\n" +
-            "       JOIN\n" +
-            "       movie_genre    mg\n" +
-            "         ON m.id      = mg.movie_id\n" +
+            "SELECT m.id, m.name, m.original_name, m.year, m.rating, m.price, m.poster_url " +
+            "  FROM movie          m " +
+            "       JOIN " +
+            "       movie_genre    mg " +
+            "         ON m.id      = mg.movie_id " +
             " WHERE mg.genre_id  = ?";
 
     static final RowMapper<Movie> movieRowMapper = new MovieRowMapper();
