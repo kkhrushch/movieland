@@ -17,7 +17,7 @@ public class GenreServiceTest {
         GenreCacheService mockGenreCacheService = mock(GenreCacheService.class);
         when(mockGenreCacheService.getAll()).thenReturn(getTestGenres());
 
-        GenreService genreService = new GenreService();
+        DefaultGenreService genreService = new DefaultGenreService();
         genreService.setCacheService(mockGenreCacheService);
 
         List<Genre> actualGenres = genreService.getAll();
