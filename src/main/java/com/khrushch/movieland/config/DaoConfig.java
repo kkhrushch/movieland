@@ -13,9 +13,6 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:app.properties")
 public class DaoConfig {
-    @Value("${driver.class.name}")
-    private String driverClassName;
-
     @Value("${url}")
     private String url;
 
