@@ -22,18 +22,18 @@ public class JdbcMovieDao implements MovieDao {
             "         ON m.id      = mg.movie_id " +
             " WHERE mg.genre_id  = ?";
 
-    static final RowMapper<Movie> movieRowMapper = new MovieRowMapper();
+    static final RowMapper<Movie> MOVIE_ROW_MAPPER = new MovieRowMapper();
 
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Movie> getAll() {
-        return jdbcTemplate.query(SELECT_ALL_MOVIES_SQL, movieRowMapper);
+        return jdbcTemplate.query(SELECT_ALL_MOVIES_SQL, MOVIE_ROW_MAPPER);
     }
 
     @Override
     public List<Movie> getByGenreId(long genreId){
-        return jdbcTemplate.query(SELECT_MOVIES_BY_GENRE_ID, movieRowMapper, genreId);
+        return jdbcTemplate.query(SELECT_MOVIES_BY_GENRE_ID, MOVIE_ROW_MAPPER, genreId);
     }
 
     @Autowired
