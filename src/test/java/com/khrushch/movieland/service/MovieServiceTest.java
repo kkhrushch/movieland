@@ -18,7 +18,7 @@ public class MovieServiceTest {
     @Test
     public void testGetAll() {
         MovieDao mockMovieDao = mock(MovieDao.class);
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         when(mockMovieDao.getAll()).thenReturn(getTestMovies());
@@ -38,7 +38,7 @@ public class MovieServiceTest {
         MovieDao mockMovieDao = mock(MovieDao.class);
         when(mockMovieDao.getAll()).thenReturn(mockMovies);
 
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         List<Movie> actualMovies = movieService.getRandom();
@@ -52,7 +52,7 @@ public class MovieServiceTest {
         MovieDao mockMovieDao = mock(MovieDao.class);
         when(mockMovieDao.getByGenreId(1)).thenReturn(getTestMovies());
 
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         List<Movie> actualMovies = movieService.getByGenreId(1);
