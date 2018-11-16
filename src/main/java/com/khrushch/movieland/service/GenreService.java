@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class GenreService {
-    private Logger logger = LoggerFactory.getLogger(GenreService.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private GenreCacheService cacheService;
 

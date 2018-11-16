@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
-    private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
     private static final int NUMBER_OF_RANDOM_MOVIES = 3;
     private static final Random random = new Random();
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private MovieDao movieDao;
 
