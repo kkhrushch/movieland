@@ -13,8 +13,8 @@ import java.util.List;
 
 @Service
 public class GenreCacheService {
-    private static final Logger logger = LoggerFactory.getLogger(GenreCacheService.class);
     private static final int CACHE_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private volatile List<Genre> genreCache = new ArrayList<>();
     private GenreDao genreDao;
