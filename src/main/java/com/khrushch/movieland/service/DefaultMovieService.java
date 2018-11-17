@@ -39,7 +39,7 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> getByGenreId(long genreId){
+    public List<Movie> getByGenreId(long genreId) {
         List<Movie> movies = movieDao.getByGenreId(genreId);
         logger.debug("Fetched movies by genreId {}: {}", genreId, movies);
         return movies;

@@ -13,7 +13,6 @@ import java.util.List;
 
 @Service
 public class GenreCacheService {
-    private static final int CACHE_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private volatile List<Genre> genreCache = new ArrayList<>();
@@ -25,7 +24,7 @@ public class GenreCacheService {
         return genres;
     }
 
-    @Scheduled(fixedDelay = CACHE_REFRESH_INTERVAL_MS)
+    @Scheduled(fixedDelayString = "${genre.cache.refresh.interval.millis}")
     private void refreshCache() {
         genreCache = genreDao.getAll();
         logger.debug("Refreshed cache; genres: {}", genreCache);
