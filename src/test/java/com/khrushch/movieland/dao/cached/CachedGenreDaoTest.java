@@ -1,5 +1,6 @@
-package com.khrushch.movieland.service;
+package com.khrushch.movieland.dao.cached;
 
+import com.khrushch.movieland.dao.cached.CachedGenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.junit.Test;
 import org.springframework.util.ReflectionUtils;
@@ -11,19 +12,19 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class GenreCacheServiceTest {
+public class CachedGenreDaoTest {
 
     @Test
     public void getAll() throws NoSuchFieldException {
-        GenreCacheService genreCacheService = new GenreCacheService();
+        CachedGenreDao cachedGenreDao = new CachedGenreDao();
 
         // set test cache
-        Field genreCacheField = GenreCacheService.class.getDeclaredField("genreCache");
+        Field genreCacheField = CachedGenreDao.class.getDeclaredField("genreCache");
         genreCacheField.setAccessible(true);
-        ReflectionUtils.setField(genreCacheField, genreCacheService, getTestGenres());
+        ReflectionUtils.setField(genreCacheField, cachedGenreDao, getTestGenres());
         genreCacheField.setAccessible(false);
 
-        List<Genre> actualGenres = genreCacheService.getAll();
+        List<Genre> actualGenres = cachedGenreDao.getAll();
 
         assertEquals(getTestGenres(), actualGenres);
     }

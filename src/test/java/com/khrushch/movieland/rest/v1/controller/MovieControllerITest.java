@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:movie-test-applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
 @WebAppConfiguration
 public class MovieControllerITest {
     private MockMvc mockMvc;
