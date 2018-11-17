@@ -1,9 +1,9 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khrushch.movieland.dao.cached.CachedGenreDao;
 import com.khrushch.movieland.dao.jdbc.JdbcGenreDao;
 import com.khrushch.movieland.model.Genre;
-import com.khrushch.movieland.service.GenreCacheService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:test-applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
+@ContextConfiguration(locations = {"classpath:genre-test-applicationContext.xml", "file:src/main/webapp/WEB-INF/rest-v1-servlet.xml"})
 @WebAppConfiguration
 public class GenreControllerITest {
     private MockMvc mockMvc;
@@ -49,19 +49,6 @@ public class GenreControllerITest {
 
     @Test
     public void getAll() throws Exception {
-        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
-        when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Genre>>any())).thenReturn(getTestGenres());
-
-        JdbcGenreDao jdbcGenreDao = wac.getBean(JdbcGenreDao.class);
-        jdbcGenreDao.setJdbcTemplate(mockJdbcTemplate);
-
-        // invoke cache refresh
-        GenreCacheService genreCacheService = wac.getBean(GenreCacheService.class);
-        Method method = GenreCacheService.class.getDeclaredMethod("refreshCache");
-        method.setAccessible(true);
-        method.invoke(genreCacheService);
-        method.setAccessible(false);
-
         MvcResult mvcResult = mockMvc.perform(get("/genre"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -73,6 +60,7 @@ public class GenreControllerITest {
         ObjectMapper mapper = new ObjectMapper();
         String expectedJson = mapper.writeValueAsString(getTestGenres());
 
+        JdbcTemplate mockJdbcTemplate = wac.getBean(JdbcTemplate.class);
         verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Genre>>any());
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
 
