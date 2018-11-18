@@ -31,20 +31,16 @@ public class DefaultMovieServiceTest {
 
     @Test
     public void testGetRandomMovies() {
-        List<Movie> mockMovies = Stream.generate(Movie::new)
-                .limit(20)
-                .collect(Collectors.toList());
-
         MovieDao mockMovieDao = mock(MovieDao.class);
-        when(mockMovieDao.getAll()).thenReturn(mockMovies);
+        when(mockMovieDao.getRandom()).thenReturn(getTestMovies());
 
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         List<Movie> actualMovies = movieService.getRandom();
 
-        assertEquals(3, actualMovies.size());
-        verify(mockMovieDao, times(1)).getAll();
+        assertEquals(getTestMovies(), actualMovies);
+        verify(mockMovieDao, times(1)).getRandom();
     }
 
     @Test
