@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class MovieServiceTest {
+public class DefaultMovieServiceTest {
 
     @Test
     public void testGetAll() {
