@@ -1,15 +1,18 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.service.DefaultMovieService;
+import com.khrushch.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.comparator.ArraySizeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -59,7 +64,14 @@ public class MovieControllerITest {
     }
 
     @Test
+    @DirtiesContext
     public void testGetRandom() throws Exception {
+        MovieDao mockMovieDao = mock(MovieDao.class);
+        when(mockMovieDao.getRandom()).thenReturn(getTestMovies());
+
+        DefaultMovieService defaultMovieService = wac.getBean(DefaultMovieService.class);
+        defaultMovieService.setMovieDao(mockMovieDao);
+
         MvcResult mvcResult = mockMvc.perform(get("/movie/random"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -68,7 +80,9 @@ public class MovieControllerITest {
 
         String actualJson = mvcResult.getResponse().getContentAsString();
 
-        JSONAssert.assertEquals("[3]", actualJson, new ArraySizeComparator(JSONCompareMode.LENIENT));
+        String expectedJson = new ObjectMapper().writeValueAsString(getTestMovies());
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
     @Test

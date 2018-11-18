@@ -28,12 +28,7 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<Movie> getRandom() {
-        List<Movie> allMovies = movieDao.getAll();
-
-        List<Movie> movies = random.ints(NUMBER_OF_RANDOM_MOVIES, 0, allMovies.size())
-                .mapToObj(allMovies::get)
-                .collect(Collectors.toList());
-
+        List<Movie> movies = movieDao.getRandom();
         logger.debug("Fetched random movies: {}", movies);
         return movies;
     }
