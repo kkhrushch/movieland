@@ -1,28 +1,31 @@
 package com.khrushch.movieland.dao.cached;
 
-import com.khrushch.movieland.dao.cached.CachedGenreDao;
+import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.junit.Test;
-import org.springframework.util.ReflectionUtils;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CachedGenreDaoTest {
 
     @Test
     public void getAll() throws NoSuchFieldException {
         CachedGenreDao cachedGenreDao = new CachedGenreDao();
 
-        // set test cache
-        Field genreCacheField = CachedGenreDao.class.getDeclaredField("genreCache");
-        genreCacheField.setAccessible(true);
-        ReflectionUtils.setField(genreCacheField, cachedGenreDao, getTestGenres());
-        genreCacheField.setAccessible(false);
+        GenreDao genreDao = mock(GenreDao.class);
+        when(genreDao.getAll()).thenReturn(getTestGenres());
+
+        cachedGenreDao.setGenreDao(genreDao);
+        cachedGenreDao.refreshCache();
 
         List<Genre> actualGenres = cachedGenreDao.getAll();
 

@@ -6,10 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import java.util.List;
 
 @Repository
 @Primary
-@PropertySource("classpath:app.properties")
 public class CachedGenreDao implements GenreDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -31,14 +28,10 @@ public class CachedGenreDao implements GenreDao {
     }
 
     @Scheduled(fixedDelayString = "${genre.cache.refresh.interval.millis}", initialDelayString = "${genre.cache.refresh.interval.millis}")
-    private void refreshCache() {
+    @PostConstruct
+    void refreshCache() {
         genreCache = genreDao.getAll();
         logger.debug("Refreshed cache; genres: {}", genreCache);
-    }
-
-    @PostConstruct
-    public void init() {
-        refreshCache();
     }
 
     @Autowired
