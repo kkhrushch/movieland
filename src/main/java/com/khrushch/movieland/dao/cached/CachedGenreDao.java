@@ -1,20 +1,22 @@
-package com.khrushch.movieland.service;
+package com.khrushch.movieland.dao.cached;
 
 import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class GenreCacheService {
-    private static final Logger logger = LoggerFactory.getLogger(GenreCacheService.class);
-    private static final int CACHE_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
+@Repository
+@Primary
+public class CachedGenreDao implements GenreDao {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private volatile List<Genre> genreCache = new ArrayList<>();
     private GenreDao genreDao;
@@ -25,8 +27,9 @@ public class GenreCacheService {
         return genres;
     }
 
-    @Scheduled(fixedDelay = CACHE_REFRESH_INTERVAL_MS)
-    private void refreshCache() {
+    @Scheduled(fixedDelayString = "${genre.cache.refresh.interval.millis}", initialDelayString = "${genre.cache.refresh.interval.millis}")
+    @PostConstruct
+    void refreshCache() {
         genreCache = genreDao.getAll();
         logger.debug("Refreshed cache; genres: {}", genreCache);
     }

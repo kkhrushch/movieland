@@ -13,16 +13,13 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:app.properties")
 public class DaoConfig {
-    @Value("${driver.class.name}")
-    private String driverClassName;
-
-    @Value("${url}")
+    @Value("${jdbc.url}")
     private String url;
 
-    @Value("${user}")
+    @Value("${jdbc.user}")
     private String user;
 
-    @Value("${pass}")
+    @Value("${jdbc.pass}")
     private String pass;
 
     @Bean

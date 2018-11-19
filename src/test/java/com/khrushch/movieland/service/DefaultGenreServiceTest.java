@@ -1,5 +1,7 @@
 package com.khrushch.movieland.service;
 
+import com.khrushch.movieland.dao.GenreDao;
+import com.khrushch.movieland.dao.cached.CachedGenreDao;
 import com.khrushch.movieland.model.Genre;
 import org.junit.Test;
 
@@ -10,19 +12,19 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class GenreServiceTest {
+public class DefaultGenreServiceTest {
 
     @Test
     public void getAll() {
-        GenreCacheService mockGenreCacheService = mock(GenreCacheService.class);
-        when(mockGenreCacheService.getAll()).thenReturn(getTestGenres());
+        GenreDao mockGenreDao = mock(GenreDao.class);
+        when(mockGenreDao.getAll()).thenReturn(getTestGenres());
 
-        GenreService genreService = new GenreService();
-        genreService.setCacheService(mockGenreCacheService);
+        DefaultGenreService genreService = new DefaultGenreService();
+        genreService.setGenreDao(mockGenreDao);
 
         List<Genre> actualGenres = genreService.getAll();
 
-        verify(mockGenreCacheService, times(1)).getAll();
+        verify(mockGenreDao, times(1)).getAll();
         assertEquals(getTestGenres(), actualGenres);
     }
 

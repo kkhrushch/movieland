@@ -6,7 +6,6 @@ import org.mockito.Matchers;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,10 +29,10 @@ public class JdbcGenreDaoTest {
     }
 
     private List<Genre> getTestGenres() {
-        return new ArrayList<>(Arrays.asList(
+        return Arrays.asList(
                 new Genre(1, "вестерн"),
                 new Genre(2, "ужасы")
-        ));
+        );
     }
 
 }

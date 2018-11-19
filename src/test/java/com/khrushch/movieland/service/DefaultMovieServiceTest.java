@@ -13,12 +13,12 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class MovieServiceTest {
+public class DefaultMovieServiceTest {
 
     @Test
     public void testGetAll() {
         MovieDao mockMovieDao = mock(MovieDao.class);
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         when(mockMovieDao.getAll()).thenReturn(getTestMovies());
@@ -31,20 +31,16 @@ public class MovieServiceTest {
 
     @Test
     public void testGetRandomMovies() {
-        List<Movie> mockMovies = Stream.generate(Movie::new)
-                .limit(20)
-                .collect(Collectors.toList());
-
         MovieDao mockMovieDao = mock(MovieDao.class);
-        when(mockMovieDao.getAll()).thenReturn(mockMovies);
+        when(mockMovieDao.getRandom()).thenReturn(getTestMovies());
 
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         List<Movie> actualMovies = movieService.getRandom();
 
-        assertEquals(3, actualMovies.size());
-        verify(mockMovieDao, times(1)).getAll();
+        assertEquals(getTestMovies(), actualMovies);
+        verify(mockMovieDao, times(1)).getRandom();
     }
 
     @Test
@@ -52,7 +48,7 @@ public class MovieServiceTest {
         MovieDao mockMovieDao = mock(MovieDao.class);
         when(mockMovieDao.getByGenreId(1)).thenReturn(getTestMovies());
 
-        MovieService movieService = new MovieService();
+        DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
         List<Movie> actualMovies = movieService.getByGenreId(1);
