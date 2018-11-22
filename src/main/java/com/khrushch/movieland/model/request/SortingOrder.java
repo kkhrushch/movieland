@@ -1,21 +1,21 @@
-package com.khrushch.movieland.common;
+package com.khrushch.movieland.model.request;
 
 public enum SortingOrder {
     ASC,
     DESC;
 
-    public static SortingOrder forName(String name){
+    public static SortingOrder forName(String name) {
         for (SortingOrder value : values()) {
-            if(value.name().equalsIgnoreCase(name.trim())){
+            if (value.name().equalsIgnoreCase(name.trim())) {
                 return value;
             }
         }
         throw new IllegalArgumentException("Cannot get SortingOrder for name: " + name);
     }
 
-    public static boolean isSortingOrder(String text){
+    public static boolean isSortingOrder(String text) {
         for (SortingOrder value : values()) {
-            if(value.name().equalsIgnoreCase(text.trim())){
+            if (value.name().equalsIgnoreCase(text.trim())) {
                 return true;
             }
         }

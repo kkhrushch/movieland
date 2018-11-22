@@ -1,6 +1,7 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,8 @@ public class MovieController {
 
     @GetMapping("/movie")
     public List<Movie> getAll(
-            @RequestParam Map<String,String> requestParams) {
-        return movieService.getAll(requestParams);
+            @RequestParam Map<String, String> requestParams) {
+        return movieService.getAll(new MovieQueryParam(requestParams));
     }
 
     @GetMapping("/movie/random")
@@ -29,11 +30,9 @@ public class MovieController {
     @GetMapping("/movie/genre/{genreId}")
     public List<Movie> getByGenreId(
             @PathVariable long genreId,
-            @RequestParam Map<String,String> requestParams){
-        return movieService.getByGenreId(genreId, requestParams);
+            @RequestParam Map<String, String> requestParams) {
+        return movieService.getByGenreId(genreId, new MovieQueryParam(requestParams));
     }
-
-    get
 
     @Autowired
     public void setMovieService(MovieService movieService) {

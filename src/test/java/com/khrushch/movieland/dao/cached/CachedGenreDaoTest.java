@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 public class CachedGenreDaoTest {
 
     @Test
-    public void getAll() throws NoSuchFieldException {
+    public void getAll() {
         CachedGenreDao cachedGenreDao = new CachedGenreDao();
 
         GenreDao genreDao = mock(GenreDao.class);

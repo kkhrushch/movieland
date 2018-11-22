@@ -1,14 +1,17 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.MovieDao;
+import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
+import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.request.MovieQueryParam;
+import com.khrushch.movieland.model.request.QueryParam;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -21,11 +24,14 @@ public class DefaultMovieServiceTest {
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
-        when(mockMovieDao.getAll()).thenReturn(getTestMovies());
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
 
-        List<Movie> actualMovies = movieService.getAll();
+        when(mockMovieDao.getAll(queryParam)).thenReturn(getTestMovies());
 
-        verify(mockMovieDao, times(1)).getAll();
+        List<Movie> actualMovies = movieService.getAll(queryParam);
+
+        verify(mockMovieDao, times(1)).getAll(queryParam);
         assertEquals(getTestMovies(), actualMovies);
     }
 
@@ -44,16 +50,20 @@ public class DefaultMovieServiceTest {
     }
 
     @Test
-    public void testGetByGenreId(){
+    public void testGetByGenreId() {
         MovieDao mockMovieDao = mock(MovieDao.class);
-        when(mockMovieDao.getByGenreId(1)).thenReturn(getTestMovies());
+
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
+
+        when(mockMovieDao.getByGenreId(1, queryParam)).thenReturn(getTestMovies());
 
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
 
-        List<Movie> actualMovies = movieService.getByGenreId(1);
+        List<Movie> actualMovies = movieService.getByGenreId(1, queryParam);
 
-        verify(mockMovieDao, times(1)).getByGenreId(1);
+        verify(mockMovieDao, times(1)).getByGenreId(1, queryParam);
         assertEquals(getTestMovies(), actualMovies);
     }
 
