@@ -70,6 +70,20 @@ public class MovieControllerTest {
         verify(mockMovieService, times(1)).getByGenreId(1, queryParam);
     }
 
+    @Test
+    public void testGetByMovieId() {
+        MovieService mockMovieService = mock(MovieService.class);
+        when(mockMovieService.getById(1L)).thenReturn(getTestMovies().get(0));
+
+        MovieController movieController = new MovieController();
+        movieController.setMovieService(mockMovieService);
+
+        Movie actualMovie = mockMovieService.getById(1L);
+
+        assertEquals(getTestMovies().get(0), actualMovie);
+        verify(mockMovieService, times(1)).getById(1L);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);

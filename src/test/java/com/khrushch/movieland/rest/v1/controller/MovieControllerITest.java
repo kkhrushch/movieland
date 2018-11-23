@@ -2,9 +2,8 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dao.MovieDao;
-import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.*;
 import com.khrushch.movieland.service.DefaultMovieService;
-import com.khrushch.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,6 +104,25 @@ public class MovieControllerITest {
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
+    @Test
+    public void testGetById() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/movie/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String actualJson = mvcResult.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        Movie expectedMovie = getTestMovieWithAllFieldsSet();
+
+        String expectedJson = mapper.writeValueAsString(expectedMovie);
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);
@@ -142,6 +161,43 @@ public class MovieControllerITest {
         fourth.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BMTUxMzQyNjA5MF5BMl5BanBnXkFtZTYwOTU2NTY3._V1._SY209_CR0,0,140,209_.jpg");
 
         return Arrays.asList(first, second, third, fourth);
+    }
+
+    private Movie getTestMovieWithAllFieldsSet() {
+        Movie movie = getTestMovies().get(0);
+        movie.setCountries(getTestCountries());
+        movie.setGenres(getTestGenres());
+        movie.setReviews(getTestReviews());
+
+        return movie;
+    }
+
+    private List<Country> getTestCountries() {
+        return Arrays.asList(
+                new Country(1, "США"),
+                new Country(2, "Франция")
+        );
+    }
+
+    private List<Genre> getTestGenres() {
+        return new ArrayList<>(Arrays.asList(
+                new Genre(1, "вестерн"),
+                new Genre(2, "ужасы")
+        ));
+    }
+
+    private List<Review> getTestReviews() {
+        Review first = new Review();
+        first.setId(1L);
+        first.setUser(new User(1L, "a nickname"));
+        first.setText("a review");
+
+        Review second = new Review();
+        second.setId(2L);
+        second.setUser(new User(2L, "another nickname"));
+        second.setText("another review");
+
+        return Arrays.asList(first, second);
     }
 
 }

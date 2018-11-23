@@ -15,6 +15,9 @@ public class DefaultMovieService implements MovieService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private MovieDao movieDao;
+    private GenreService genreService;
+    private CountryService countryService;
+    private ReviewService reviewService;
 
     @Override
     public List<Movie> getAll(QueryParam queryParam) {
@@ -37,8 +40,34 @@ public class DefaultMovieService implements MovieService {
         return movies;
     }
 
+    @Override
+    public Movie getById(long id) {
+        Movie movie = movieDao.getById(id);
+        genreService.enrich(movie);
+        countryService.enrich(movie);
+        reviewService.enrich(movie);
+
+        logger.debug("Fetched by id: {}", movie);
+        return movie;
+    }
+
     @Autowired
     public void setMovieDao(MovieDao movieDao) {
         this.movieDao = movieDao;
+    }
+
+    @Autowired
+    public void setGenreService(GenreService genreService) {
+        this.genreService = genreService;
+    }
+
+    @Autowired
+    public void setCountryService(CountryService countryService) {
+        this.countryService = countryService;
+    }
+
+    @Autowired
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
     }
 }

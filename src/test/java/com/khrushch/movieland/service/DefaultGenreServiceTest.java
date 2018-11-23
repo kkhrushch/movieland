@@ -1,11 +1,10 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.GenreDao;
-import com.khrushch.movieland.dao.cached.CachedGenreDao;
 import com.khrushch.movieland.model.Genre;
+import com.khrushch.movieland.model.Movie;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class DefaultGenreServiceTest {
 
     @Test
-    public void getAll() {
+    public void testGetAll() {
         GenreDao mockGenreDao = mock(GenreDao.class);
         when(mockGenreDao.getAll()).thenReturn(getTestGenres());
 
@@ -28,11 +27,27 @@ public class DefaultGenreServiceTest {
         assertEquals(getTestGenres(), actualGenres);
     }
 
+    @Test
+    public void testGetByMovieId() {
+        GenreDao mockGenreDao = mock(GenreDao.class);
+        when(mockGenreDao.getByMovieId(1L)).thenReturn(getTestGenres());
+
+        DefaultGenreService genreService = new DefaultGenreService();
+        genreService.setGenreDao(mockGenreDao);
+
+        Movie movie = new Movie();
+        movie.setId(1L);
+        genreService.enrich(movie);
+
+        verify(mockGenreDao, times(1)).getByMovieId(1L);
+        assertEquals(getTestGenres(), movie.getGenres());
+    }
+
     private List<Genre> getTestGenres() {
-        return new ArrayList<>(Arrays.asList(
+        return Arrays.asList(
                 new Genre(1, "вестерн"),
                 new Genre(2, "ужасы")
-        ));
+        );
     }
 
 }

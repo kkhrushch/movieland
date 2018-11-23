@@ -11,25 +11,40 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CachedGenreDaoTest {
 
     @Test
-    public void getAll() {
+    public void testGetAll() {
         CachedGenreDao cachedGenreDao = new CachedGenreDao();
 
-        GenreDao genreDao = mock(GenreDao.class);
-        when(genreDao.getAll()).thenReturn(getTestGenres());
+        GenreDao mockGenreDao = mock(GenreDao.class);
+        when(mockGenreDao.getAll()).thenReturn(getTestGenres());
 
-        cachedGenreDao.setGenreDao(genreDao);
+        cachedGenreDao.setGenreDao(mockGenreDao);
         cachedGenreDao.refreshCache();
 
         List<Genre> actualGenres = cachedGenreDao.getAll();
 
         assertEquals(getTestGenres(), actualGenres);
+        verify(mockGenreDao, times(1)).getAll();
+    }
+
+    @Test
+    public void testGetByMovieId() {
+        CachedGenreDao cachedGenreDao = new CachedGenreDao();
+
+        GenreDao mockGenreDao = mock(GenreDao.class);
+        when(mockGenreDao.getByMovieId(1)).thenReturn(getTestGenres());
+
+        cachedGenreDao.setGenreDao(mockGenreDao);
+
+        List<Genre> actualGenres = cachedGenreDao.getByMovieId(1);
+
+        assertEquals(getTestGenres(), actualGenres);
+        verify(mockGenreDao, times(1)).getByMovieId(1);
     }
 
     private List<Genre> getTestGenres() {

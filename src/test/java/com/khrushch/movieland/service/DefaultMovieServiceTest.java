@@ -8,7 +8,6 @@ import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.model.request.QueryParam;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +66,32 @@ public class DefaultMovieServiceTest {
         assertEquals(getTestMovies(), actualMovies);
     }
 
+    @Test
+    public void testGetById() {
+        Movie movie = getTestMovies().get(0);
+
+        MovieDao mockMovieDao = mock(MovieDao.class);
+        when(mockMovieDao.getById(1L)).thenReturn(movie);
+
+        GenreService mockGenreService = mock(GenreService.class);
+        CountryService mockCountryService = mock(CountryService.class);
+        ReviewService mockReviewService = mock(ReviewService.class);
+
+        DefaultMovieService movieService = new DefaultMovieService();
+        movieService.setMovieDao(mockMovieDao);
+        movieService.setGenreService(mockGenreService);
+        movieService.setCountryService(mockCountryService);
+        movieService.setReviewService(mockReviewService);
+
+        Movie actualMovie = movieService.getById(1L);
+
+        verify(mockMovieDao, times(1)).getById(1L);
+        verify(mockGenreService, times(1)).enrich(movie);
+        verify(mockCountryService, times(1)).enrich(movie);
+        verify(mockReviewService, times(1)).enrich(movie);
+        assertEquals(movie, actualMovie);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);
@@ -86,7 +111,7 @@ public class DefaultMovieServiceTest {
         second.setPrice(145.9);
         second.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BOGJjNzZmMmUtMjljNC00ZjU5LWJiODQtZmEzZTU0MjBlNzgxL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1._SY209_CR0,0,140,209_.jpg");
 
-        return new ArrayList<>(Arrays.asList(first, second));
+        return Arrays.asList(first, second);
     }
 
 }

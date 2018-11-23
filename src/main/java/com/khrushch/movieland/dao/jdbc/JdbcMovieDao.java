@@ -36,6 +36,11 @@ public class JdbcMovieDao implements MovieDao {
         return jdbcTemplate.query(query, MOVIE_ROW_MAPPER, genreId);
     }
 
+    @Override
+    public Movie getById(long id){
+        return jdbcTemplate.queryForObject(MovieStatement.SELECT_MOVIE_BY_ID, MOVIE_ROW_MAPPER, id);
+    }
+
     @Autowired
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
