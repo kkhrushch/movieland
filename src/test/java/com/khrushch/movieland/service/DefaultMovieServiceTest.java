@@ -3,14 +3,11 @@ package com.khrushch.movieland.service;
 import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
 import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
-import com.khrushch.movieland.model.Country;
-import com.khrushch.movieland.model.Genre;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.model.request.QueryParam;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,17 +75,20 @@ public class DefaultMovieServiceTest {
 
         GenreService mockGenreService = mock(GenreService.class);
         CountryService mockCountryService = mock(CountryService.class);
+        ReviewService mockReviewService = mock(ReviewService.class);
 
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
         movieService.setGenreService(mockGenreService);
         movieService.setCountryService(mockCountryService);
+        movieService.setReviewService(mockReviewService);
 
         Movie actualMovie = movieService.getById(1L);
 
         verify(mockMovieDao, times(1)).getById(1L);
         verify(mockGenreService, times(1)).enrich(movie);
         verify(mockCountryService, times(1)).enrich(movie);
+        verify(mockReviewService, times(1)).enrich(movie);
         assertEquals(movie, actualMovie);
     }
 
@@ -114,25 +114,4 @@ public class DefaultMovieServiceTest {
         return Arrays.asList(first, second);
     }
 
-    private Movie getTestMovieWithGenreAndCountries() {
-        Movie movie = getTestMovies().get(0);
-        movie.setCountries(getTestCountries());
-        movie.setGenres(getTestGenres());
-
-        return movie;
-    }
-
-    private List<Country> getTestCountries() {
-        return Arrays.asList(
-                new Country(1, "США"),
-                new Country(2, "Франция")
-        );
-    }
-
-    private List<Genre> getTestGenres() {
-        return new ArrayList<>(Arrays.asList(
-                new Genre(1, "вестерн"),
-                new Genre(2, "ужасы")
-        ));
-    }
 }

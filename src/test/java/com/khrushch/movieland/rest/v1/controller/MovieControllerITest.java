@@ -2,9 +2,7 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dao.MovieDao;
-import com.khrushch.movieland.model.Country;
-import com.khrushch.movieland.model.Genre;
-import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.*;
 import com.khrushch.movieland.service.DefaultMovieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -118,7 +116,7 @@ public class MovieControllerITest {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        Movie expectedMovie = getTestMovieWithGenreAndCountries();
+        Movie expectedMovie = getTestMovieWithAllFieldsSet();
 
         String expectedJson = mapper.writeValueAsString(expectedMovie);
 
@@ -165,10 +163,11 @@ public class MovieControllerITest {
         return Arrays.asList(first, second, third, fourth);
     }
 
-    private Movie getTestMovieWithGenreAndCountries() {
+    private Movie getTestMovieWithAllFieldsSet() {
         Movie movie = getTestMovies().get(0);
         movie.setCountries(getTestCountries());
         movie.setGenres(getTestGenres());
+        movie.setReviews(getTestReviews());
 
         return movie;
     }
@@ -186,4 +185,19 @@ public class MovieControllerITest {
                 new Genre(2, "ужасы")
         ));
     }
+
+    private List<Review> getTestReviews() {
+        Review first = new Review();
+        first.setId(1L);
+        first.setUser(new User(1L, "a nickname"));
+        first.setText("a review");
+
+        Review second = new Review();
+        second.setId(2L);
+        second.setUser(new User(2L, "another nickname"));
+        second.setText("another review");
+
+        return Arrays.asList(first, second);
+    }
+
 }

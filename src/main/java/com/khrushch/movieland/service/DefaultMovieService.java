@@ -17,6 +17,7 @@ public class DefaultMovieService implements MovieService {
     private MovieDao movieDao;
     private GenreService genreService;
     private CountryService countryService;
+    private ReviewService reviewService;
 
     @Override
     public List<Movie> getAll(QueryParam queryParam) {
@@ -44,6 +45,7 @@ public class DefaultMovieService implements MovieService {
         Movie movie = movieDao.getById(id);
         genreService.enrich(movie);
         countryService.enrich(movie);
+        reviewService.enrich(movie);
 
         logger.debug("Fetched by id: {}", movie);
         return movie;
@@ -62,5 +64,10 @@ public class DefaultMovieService implements MovieService {
     @Autowired
     public void setCountryService(CountryService countryService) {
         this.countryService = countryService;
+    }
+
+    @Autowired
+    public void setReviewService(ReviewService reviewService) {
+        this.reviewService = reviewService;
     }
 }

@@ -40,4 +40,18 @@ VALUES
 , (1, 2, 1)
 , (1, 3, 2)
 , (1, 4, 1)
+);
+
+INSERT INTO app_user(id, email, password, role, first_name, last_name, nickname)
+VALUES
+(
+  (1, 'a@gmail.com', 'passA', 'USER', 'FirstNameA', 'LastNameA', 'a nickname')
+, (2, 'b@gmail.com', 'passB', 'USER', 'FirstNameB', 'LastNameB', 'another nickname')
 )
+
+INSERT INTO movie_review(id, movie_id, app_user_id, text)
+VALUES
+(
+  (1, 1, 1, 'a review')
+, (2, 1, 2, 'another review')
+);
