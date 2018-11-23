@@ -22,6 +22,13 @@ public class DefaultGenreService implements GenreService {
         return genres;
     }
 
+    @Override
+    public List<Genre> getByMovieId(long movieId){
+        List<Genre> genres = genreDao.getByMovieId(movieId);
+        logger.debug("Fetched by movieId {} genres: {}", movieId, genres);
+        return genres;
+    }
+
     @Autowired
     public void setGenreDao(GenreDao genreDao) {
         this.genreDao = genreDao;

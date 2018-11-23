@@ -2,9 +2,10 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dao.MovieDao;
+import com.khrushch.movieland.model.Country;
+import com.khrushch.movieland.model.Genre;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.service.DefaultMovieService;
-import com.khrushch.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,10 +117,8 @@ public class MovieControllerITest {
         String actualJson = mvcResult.getResponse().getContentAsString();
 
         ObjectMapper mapper = new ObjectMapper();
-//        List<Movie> moviesWithGenreIdEqual1 = getTestMovies().stream()
-//                .filter(m -> Arrays.asList(1L, 2L, 4L).contains(m.getId()))
-//                .collect(Collectors.toList());
-        Movie expectedMovie = getTestMovies().get(0);
+
+        Movie expectedMovie = getTestMovieWithGenreAndCountries();
 
         String expectedJson = mapper.writeValueAsString(expectedMovie);
 
@@ -165,4 +165,25 @@ public class MovieControllerITest {
         return Arrays.asList(first, second, third, fourth);
     }
 
+    private Movie getTestMovieWithGenreAndCountries() {
+        Movie movie = getTestMovies().get(0);
+        movie.setCountries(getTestCountries());
+        movie.setGenres(getTestGenres());
+
+        return movie;
+    }
+
+    private List<Country> getTestCountries() {
+        return Arrays.asList(
+                new Country(1, "США"),
+                new Country(2, "Франция")
+        );
+    }
+
+    private List<Genre> getTestGenres() {
+        return new ArrayList<>(Arrays.asList(
+                new Genre(1, "вестерн"),
+                new Genre(2, "ужасы")
+        ));
+    }
 }

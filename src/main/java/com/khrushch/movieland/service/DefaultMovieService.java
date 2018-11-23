@@ -19,8 +19,8 @@ public class DefaultMovieService implements MovieService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private MovieDao movieDao;
-    private GenreDao genreDao;
-    private CountryDao countryDao;
+    private GenreService genreService;
+    private CountryService countryService;
 
     @Override
     public List<Movie> getAll(QueryParam queryParam) {
@@ -46,8 +46,8 @@ public class DefaultMovieService implements MovieService {
     @Override
     public Movie getById(long id) {
         Movie movie = movieDao.getById(id);
-        List<Genre> movieGenres = genreDao.getByMovieId(id);
-        List<Country> movieCountries = countryDao.getByMovieId(id);
+        List<Genre> movieGenres = genreService.getByMovieId(id);
+        List<Country> movieCountries = countryService.getByMovieId(id);
 
         movie.setGenres(movieGenres);
         movie.setCountries(movieCountries);
@@ -62,12 +62,12 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Autowired
-    public void setGenreDao(GenreDao genreDao) {
-        this.genreDao = genreDao;
+    public void setGenreService(GenreService genreService) {
+        this.genreService = genreService;
     }
 
     @Autowired
-    public void setCountryDao(CountryDao countryDao) {
-        this.countryDao = countryDao;
+    public void setCountryService(CountryService countryService) {
+        this.countryService = countryService;
     }
 }

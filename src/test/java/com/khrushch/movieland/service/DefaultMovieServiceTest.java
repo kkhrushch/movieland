@@ -76,22 +76,22 @@ public class DefaultMovieServiceTest {
         MovieDao mockMovieDao = mock(MovieDao.class);
         when(mockMovieDao.getById(1L)).thenReturn(getTestMovies().get(0));
 
-        GenreDao mockGenreDao = mock(GenreDao.class);
-        when(mockGenreDao.getByMovieId(1L)).thenReturn(getTestGenres());
+        GenreService mockGenreService = mock(GenreService.class);
+        when(mockGenreService.getByMovieId(1L)).thenReturn(getTestGenres());
 
-        CountryDao mockCountryDao = mock(CountryDao.class);
-        when(mockCountryDao.getByMovieId(1L)).thenReturn(getTestCountries());
+        CountryService mockCountryService = mock(CountryService.class);
+        when(mockCountryService.getByMovieId(1L)).thenReturn(getTestCountries());
 
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
-        movieService.setGenreDao(mockGenreDao);
-        movieService.setCountryDao(mockCountryDao);
+        movieService.setGenreService(mockGenreService);
+        movieService.setCountryService(mockCountryService);
 
         Movie actualMovie = movieService.getById(1L);
 
         verify(mockMovieDao, times(1)).getById(1L);
-        verify(mockGenreDao, times(1)).getByMovieId(1L);
-        verify(mockCountryDao, times(1)).getByMovieId(1L);
+        verify(mockGenreService, times(1)).getByMovieId(1L);
+        verify(mockCountryService, times(1)).getByMovieId(1L);
         assertEquals(getTestMovieWithGenreAndCountries(), actualMovie);
     }
 
