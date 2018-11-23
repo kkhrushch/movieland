@@ -104,6 +104,27 @@ public class MovieControllerITest {
         JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
     }
 
+    @Test
+    public void testGetById() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/movie/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String actualJson = mvcResult.getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+//        List<Movie> moviesWithGenreIdEqual1 = getTestMovies().stream()
+//                .filter(m -> Arrays.asList(1L, 2L, 4L).contains(m.getId()))
+//                .collect(Collectors.toList());
+        Movie expectedMovie = getTestMovies().get(0);
+
+        String expectedJson = mapper.writeValueAsString(expectedMovie);
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.LENIENT);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);

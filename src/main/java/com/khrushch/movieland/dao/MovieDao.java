@@ -11,4 +11,6 @@ public interface MovieDao {
     List<Movie> getRandom();
 
     List<Movie> getByGenreId(long genreId, QueryParam queryParam);
+
+    Movie getById(long id);
 }

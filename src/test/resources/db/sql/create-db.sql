@@ -33,7 +33,6 @@ CREATE TABLE movie
 , name                    varchar(2000)      NOT NULL
 , original_name           varchar(2000)      NOT NULL
 , year                    int   NOT NULL
-, country                 varchar(2000)
 , description             varchar(2000)
 , rating                  double
 , price                   double   NOT NULL
@@ -54,6 +53,19 @@ CREATE TABLE app_user
 , role                    varchar(2000)      NOT NULL
 , first_name              varchar(2000)      NOT NULL
 , last_name               varchar(2000)      NOT NULL
-, display_name            varchar(2000)
+, nickname                varchar(2000)
+)
+;
+
+CREATE TABLE country
+( id                      int                NOT NULL
+, name                    varchar(2000)      NOT NULL
+)
+;
+
+CREATE TABLE movie_country
+( id                      int       NOT NULL
+, movie_id                int       NOT NULL
+, country_id              int       NOT NULL
 )
 ;

@@ -1,8 +1,12 @@
 package com.khrushch.movieland.service;
 
+import com.khrushch.movieland.dao.CountryDao;
+import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
 import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
+import com.khrushch.movieland.model.Country;
+import com.khrushch.movieland.model.Genre;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.model.request.QueryParam;
@@ -67,6 +71,30 @@ public class DefaultMovieServiceTest {
         assertEquals(getTestMovies(), actualMovies);
     }
 
+    @Test
+    public void testGetById() {
+        MovieDao mockMovieDao = mock(MovieDao.class);
+        when(mockMovieDao.getById(1L)).thenReturn(getTestMovies().get(0));
+
+        GenreDao mockGenreDao = mock(GenreDao.class);
+        when(mockGenreDao.getByMovieId(1L)).thenReturn(getTestGenres());
+
+        CountryDao mockCountryDao = mock(CountryDao.class);
+        when(mockCountryDao.getByMovieId(1L)).thenReturn(getTestCountries());
+
+        DefaultMovieService movieService = new DefaultMovieService();
+        movieService.setMovieDao(mockMovieDao);
+        movieService.setGenreDao(mockGenreDao);
+        movieService.setCountryDao(mockCountryDao);
+
+        Movie actualMovie = movieService.getById(1L);
+
+        verify(mockMovieDao, times(1)).getById(1L);
+        verify(mockGenreDao, times(1)).getByMovieId(1L);
+        verify(mockCountryDao, times(1)).getByMovieId(1L);
+        assertEquals(getTestMovieWithGenreAndCountries(), actualMovie);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);
@@ -89,4 +117,25 @@ public class DefaultMovieServiceTest {
         return new ArrayList<>(Arrays.asList(first, second));
     }
 
+    private Movie getTestMovieWithGenreAndCountries() {
+        Movie movie = getTestMovies().get(0);
+        movie.setCountries(getTestCountries());
+        movie.setGenres(getTestGenres());
+
+        return movie;
+    }
+
+    private List<Country> getTestCountries() {
+        return Arrays.asList(
+                new Country(1, "США"),
+                new Country(2, "Франция")
+        );
+    }
+
+    private List<Genre> getTestGenres() {
+        return new ArrayList<>(Arrays.asList(
+                new Genre(1, "вестерн"),
+                new Genre(2, "ужасы")
+        ));
+    }
 }

@@ -34,6 +34,11 @@ public class MovieController {
         return movieService.getByGenreId(genreId, new MovieQueryParam(requestParams));
     }
 
+    @GetMapping("/movie/{id}")
+    public Movie getById(@PathVariable long id) {
+        return movieService.getById(id);
+    }
+
     @Autowired
     public void setMovieService(MovieService movieService) {
         this.movieService = movieService;

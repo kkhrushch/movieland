@@ -5,6 +5,6 @@ CREATE TABLE app_user
 , role                    text      NOT NULL
 , first_name              text      NOT NULL
 , last_name               text      NOT NULL
-, display_name            text
+, nickname                text
 )
 ;

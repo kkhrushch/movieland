@@ -22,8 +22,14 @@ public class CachedGenreDao implements GenreDao {
     private GenreDao genreDao;
 
     public List<Genre> getAll() {
-        ArrayList<Genre> genres = new ArrayList<>(genreCache);
+        List<Genre> genres = new ArrayList<>(genreCache);
         logger.debug("Returning genres from cache: {}", genres);
+        return genres;
+    }
+
+    public List<Genre> getByMovieId(long movieId) {
+        List<Genre> genres = genreDao.getByMovieId(movieId);
+        logger.debug("Returning genres by movieId {} bypassing cache: {}", movieId, genres);
         return genres;
     }
 

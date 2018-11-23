@@ -25,3 +25,19 @@ VALUES
 , (6, 4, 2)
 );
 
+INSERT INTO country(id, name)
+VALUES
+(
+  (1, 'США')
+, (2, 'Франция')
+);
+
+INSERT INTO movie_country(id, movie_id, country_id)
+VALUES
+(
+  (1, 1, 1)
+, (1, 1, 2)
+, (1, 2, 1)
+, (1, 3, 2)
+, (1, 4, 1)
+)

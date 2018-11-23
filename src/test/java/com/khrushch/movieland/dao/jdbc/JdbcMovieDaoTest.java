@@ -53,6 +53,20 @@ public class JdbcMovieDaoTest {
         assertEquals(getTestMovies(), actualMovies);
     }
 
+    @Test
+    public void testGetByMovieId() {
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.queryForObject(MovieStatement.SELECT_MOVIE_BY_ID, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L)).thenReturn(getTestMovies().get(0));
+
+        JdbcMovieDao movieDao = new JdbcMovieDao();
+        movieDao.setJdbcTemplate(mockJdbcTemplate);
+
+        Movie actualMovies = movieDao.getById(1L);
+
+        verify(mockJdbcTemplate, times(1)).queryForObject(MovieStatement.SELECT_MOVIE_BY_ID, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L);
+        assertEquals(getTestMovies().get(0), actualMovies);
+    }
+
     private List<Movie> getTestMovies() {
         Movie first = new Movie();
         first.setId(1);

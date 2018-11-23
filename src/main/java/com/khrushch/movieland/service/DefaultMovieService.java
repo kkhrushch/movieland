@@ -1,6 +1,10 @@
 package com.khrushch.movieland.service;
 
+import com.khrushch.movieland.dao.CountryDao;
+import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.dao.MovieDao;
+import com.khrushch.movieland.model.Country;
+import com.khrushch.movieland.model.Genre;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.QueryParam;
 import org.slf4j.Logger;
@@ -15,6 +19,8 @@ public class DefaultMovieService implements MovieService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private MovieDao movieDao;
+    private GenreDao genreDao;
+    private CountryDao countryDao;
 
     @Override
     public List<Movie> getAll(QueryParam queryParam) {
@@ -37,8 +43,31 @@ public class DefaultMovieService implements MovieService {
         return movies;
     }
 
+    @Override
+    public Movie getById(long id) {
+        Movie movie = movieDao.getById(id);
+        List<Genre> movieGenres = genreDao.getByMovieId(id);
+        List<Country> movieCountries = countryDao.getByMovieId(id);
+
+        movie.setGenres(movieGenres);
+        movie.setCountries(movieCountries);
+
+        logger.debug("Fetched by id: {}", movie);
+        return movie;
+    }
+
     @Autowired
     public void setMovieDao(MovieDao movieDao) {
         this.movieDao = movieDao;
+    }
+
+    @Autowired
+    public void setGenreDao(GenreDao genreDao) {
+        this.genreDao = genreDao;
+    }
+
+    @Autowired
+    public void setCountryDao(CountryDao countryDao) {
+        this.countryDao = countryDao;
     }
 }

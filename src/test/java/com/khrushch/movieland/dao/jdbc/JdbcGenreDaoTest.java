@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 public class JdbcGenreDaoTest {
 
     @Test
-    public void getAll() {
+    public void testGetAll() {
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
         when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Genre>>any())).thenReturn(getTestGenres());
 
@@ -25,6 +25,20 @@ public class JdbcGenreDaoTest {
         List<Genre> actualGenres = jdbcGenreDao.getAll();
 
         verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Genre>>any());
+        assertEquals(getTestGenres(), actualGenres);
+    }
+
+    @Test
+    public void testGetByMovieId() {
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+        when(mockJdbcTemplate.query(any(String.class), Matchers.<RowMapper<Genre>>any(), anyDouble())).thenReturn(getTestGenres());
+
+        JdbcGenreDao jdbcGenreDao = new JdbcGenreDao();
+        jdbcGenreDao.setJdbcTemplate(mockJdbcTemplate);
+
+        List<Genre> actualGenres = jdbcGenreDao.getByMovieId(0L);
+
+        verify(mockJdbcTemplate, times(1)).query(any(String.class), Matchers.<RowMapper<Genre>>any(), anyDouble());
         assertEquals(getTestGenres(), actualGenres);
     }
 

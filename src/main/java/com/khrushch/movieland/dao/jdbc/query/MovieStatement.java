@@ -11,5 +11,5 @@ public class MovieStatement {
             "       movie_genre    mg " +
             "         ON m.id      = mg.movie_id " +
             " WHERE mg.genre_id  = ?";
-
+    public static final String SELECT_MOVIE_BY_ID = "SELECT id, name, original_name, year, rating, price, poster_url FROM movie WHERE id = ?";
 }
