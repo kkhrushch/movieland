@@ -1,9 +1,7 @@
 package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.model.Country;
-
-import java.util.List;
+import com.khrushch.movieland.model.Movie;
 
 public interface CountryService {
-    List<Country> getByMovieId(long movieId);
+    void enrich(Movie movie);
 }

@@ -1,7 +1,5 @@
 package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.dao.CountryDao;
-import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
 import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
@@ -73,14 +71,13 @@ public class DefaultMovieServiceTest {
 
     @Test
     public void testGetById() {
+        Movie movie = getTestMovies().get(0);
+
         MovieDao mockMovieDao = mock(MovieDao.class);
-        when(mockMovieDao.getById(1L)).thenReturn(getTestMovies().get(0));
+        when(mockMovieDao.getById(1L)).thenReturn(movie);
 
         GenreService mockGenreService = mock(GenreService.class);
-        when(mockGenreService.getByMovieId(1L)).thenReturn(getTestGenres());
-
         CountryService mockCountryService = mock(CountryService.class);
-        when(mockCountryService.getByMovieId(1L)).thenReturn(getTestCountries());
 
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
@@ -90,9 +87,9 @@ public class DefaultMovieServiceTest {
         Movie actualMovie = movieService.getById(1L);
 
         verify(mockMovieDao, times(1)).getById(1L);
-        verify(mockGenreService, times(1)).getByMovieId(1L);
-        verify(mockCountryService, times(1)).getByMovieId(1L);
-        assertEquals(getTestMovieWithGenreAndCountries(), actualMovie);
+        verify(mockGenreService, times(1)).enrich(movie);
+        verify(mockCountryService, times(1)).enrich(movie);
+        assertEquals(movie, actualMovie);
     }
 
     private List<Movie> getTestMovies() {
@@ -114,7 +111,7 @@ public class DefaultMovieServiceTest {
         second.setPrice(145.9);
         second.setPicturePath("https://images-na.ssl-images-amazon.com/images/M/MV5BOGJjNzZmMmUtMjljNC00ZjU5LWJiODQtZmEzZTU0MjBlNzgxL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1._SY209_CR0,0,140,209_.jpg");
 
-        return new ArrayList<>(Arrays.asList(first, second));
+        return Arrays.asList(first, second);
     }
 
     private Movie getTestMovieWithGenreAndCountries() {

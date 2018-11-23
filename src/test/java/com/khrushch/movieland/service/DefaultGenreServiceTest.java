@@ -2,9 +2,9 @@ package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.GenreDao;
 import com.khrushch.movieland.model.Genre;
+import com.khrushch.movieland.model.Movie;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,17 +35,19 @@ public class DefaultGenreServiceTest {
         DefaultGenreService genreService = new DefaultGenreService();
         genreService.setGenreDao(mockGenreDao);
 
-        List<Genre> actualGenres = genreService.getByMovieId(1L);
+        Movie movie = new Movie();
+        movie.setId(1L);
+        genreService.enrich(movie);
 
         verify(mockGenreDao, times(1)).getByMovieId(1L);
-        assertEquals(getTestGenres(), actualGenres);
+        assertEquals(getTestGenres(), movie.getGenres());
     }
 
     private List<Genre> getTestGenres() {
-        return new ArrayList<>(Arrays.asList(
+        return Arrays.asList(
                 new Genre(1, "вестерн"),
                 new Genre(2, "ужасы")
-        ));
+        );
     }
 
 }

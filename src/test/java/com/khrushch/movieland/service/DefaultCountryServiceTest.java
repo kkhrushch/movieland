@@ -2,6 +2,7 @@ package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.CountryDao;
 import com.khrushch.movieland.model.Country;
+import com.khrushch.movieland.model.Movie;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -20,10 +21,12 @@ public class DefaultCountryServiceTest {
         DefaultCountryService countryService = new DefaultCountryService();
         countryService.setCountryDao(mockCountryDao);
 
-        List<Country> actualCountries = countryService.getByMovieId(1L);
+        Movie movie = new Movie();
+        movie.setId(1L);
+        countryService.enrich(movie);
 
         verify(mockCountryDao, times(1)).getByMovieId(1L);
-        assertEquals(getTestCountries(), actualCountries);
+        assertEquals(getTestCountries(), movie.getCountries());
 
     }
 
