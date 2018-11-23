@@ -1,11 +1,16 @@
 package com.khrushch.movieland.dao.jdbc;
 
+import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
+import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.request.MovieQueryParam;
+import com.khrushch.movieland.model.request.QueryParam;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -14,30 +19,37 @@ import static org.mockito.Mockito.*;
 public class JdbcMovieDaoTest {
     @Test
     public void testGetAll() {
-        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
-
-        JdbcMovieDao jdbcMovieDao = new JdbcMovieDao();
-        jdbcMovieDao.setJdbcTemplate(jdbcTemplate);
-
-        when(jdbcTemplate.query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.MOVIE_ROW_MAPPER)).thenReturn(getTestMovies());
-
-        List<Movie> actualMovies = jdbcMovieDao.getAll();
-
-        verify(jdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_ALL_MOVIES_SQL, JdbcMovieDao.MOVIE_ROW_MAPPER);
-        assertEquals(getTestMovies(), actualMovies);
-    }
-
-    @Test
-    public void testGetByGenreId(){
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
-        when(mockJdbcTemplate.query(JdbcMovieDao.SELECT_MOVIES_BY_GENRE_ID, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L)).thenReturn(getTestMovies());
 
         JdbcMovieDao jdbcMovieDao = new JdbcMovieDao();
         jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
 
-        List<Movie> actualMovies = jdbcMovieDao.getByGenreId(1L);
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
 
-        verify(mockJdbcTemplate, times(1)).query(JdbcMovieDao.SELECT_MOVIES_BY_GENRE_ID, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L);
+        when(mockJdbcTemplate.query(query, JdbcMovieDao.MOVIE_ROW_MAPPER)).thenReturn(getTestMovies());
+
+        List<Movie> actualMovies = jdbcMovieDao.getAll(queryParam);
+
+        verify(mockJdbcTemplate, times(1)).query(query, JdbcMovieDao.MOVIE_ROW_MAPPER);
+        assertEquals(getTestMovies(), actualMovies);
+    }
+
+    @Test
+    public void testGetByGenreId() {
+        JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);
+
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_MOVIES_BY_GENRE_ID, queryParam);
+
+        when(mockJdbcTemplate.query(query, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L)).thenReturn(getTestMovies());
+
+        JdbcMovieDao jdbcMovieDao = new JdbcMovieDao();
+        jdbcMovieDao.setJdbcTemplate(mockJdbcTemplate);
+
+        List<Movie> actualMovies = jdbcMovieDao.getByGenreId(1L, queryParam);
+
+        verify(mockJdbcTemplate, times(1)).query(query, JdbcMovieDao.MOVIE_ROW_MAPPER, 1L);
         assertEquals(getTestMovies(), actualMovies);
     }
 

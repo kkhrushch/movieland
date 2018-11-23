@@ -2,14 +2,13 @@ package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.request.QueryParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 public class DefaultMovieService implements MovieService {
@@ -18,8 +17,8 @@ public class DefaultMovieService implements MovieService {
     private MovieDao movieDao;
 
     @Override
-    public List<Movie> getAll() {
-        List<Movie> movies = movieDao.getAll();
+    public List<Movie> getAll(QueryParam queryParam) {
+        List<Movie> movies = movieDao.getAll(queryParam);
         logger.debug("Fetched movies: {}", movies);
         return movies;
     }
@@ -32,8 +31,8 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public List<Movie> getByGenreId(long genreId) {
-        List<Movie> movies = movieDao.getByGenreId(genreId);
+    public List<Movie> getByGenreId(long genreId, QueryParam queryParam) {
+        List<Movie> movies = movieDao.getByGenreId(genreId, queryParam);
         logger.debug("Fetched movies by genreId {}: {}", genreId, movies);
         return movies;
     }

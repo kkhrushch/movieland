@@ -1,11 +1,16 @@
 package com.khrushch.movieland.rest.v1.controller;
 
+import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
+import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
 import com.khrushch.movieland.model.Movie;
+import com.khrushch.movieland.model.request.MovieQueryParam;
+import com.khrushch.movieland.model.request.QueryParam;
 import com.khrushch.movieland.service.MovieService;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -16,15 +21,19 @@ public class MovieControllerTest {
     @Test
     public void testGetAll() {
         MovieService mockMovieService = mock(MovieService.class);
-        when(mockMovieService.getAll()).thenReturn(getTestMovies());
+
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
+
+        when(mockMovieService.getAll(queryParam)).thenReturn(getTestMovies());
 
         MovieController movieController = new MovieController();
         movieController.setMovieService(mockMovieService);
 
-        List<Movie> actualMovies = mockMovieService.getAll();
+        List<Movie> actualMovies = mockMovieService.getAll(queryParam);
 
         assertEquals(getTestMovies(), actualMovies);
-        verify(mockMovieService, times(1)).getAll();
+        verify(mockMovieService, times(1)).getAll(queryParam);
     }
 
     @Test
@@ -44,19 +53,21 @@ public class MovieControllerTest {
     }
 
     @Test
-    public void testGetByGenreId(){
-        // Verify that controller returns result from service "as is"
-
+    public void testGetByGenreId() {
         MovieService mockMovieService = mock(MovieService.class);
-        when(mockMovieService.getByGenreId(1)).thenReturn(getTestMovies());
+
+        QueryParam queryParam = new MovieQueryParam(new HashMap<>());
+        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
+
+        when(mockMovieService.getByGenreId(1, queryParam)).thenReturn(getTestMovies());
 
         MovieController movieController = new MovieController();
         movieController.setMovieService(mockMovieService);
 
-        List<Movie> actualMovies = mockMovieService.getByGenreId(1);
+        List<Movie> actualMovies = mockMovieService.getByGenreId(1, queryParam);
 
         assertEquals(getTestMovies(), actualMovies);
-        verify(mockMovieService, times(1)).getByGenreId(1);
+        verify(mockMovieService, times(1)).getByGenreId(1, queryParam);
     }
 
     private List<Movie> getTestMovies() {
