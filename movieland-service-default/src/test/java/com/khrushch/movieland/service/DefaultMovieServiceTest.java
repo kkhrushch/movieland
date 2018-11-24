@@ -1,8 +1,6 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.MovieDao;
-import com.khrushch.movieland.dao.jdbc.query.MovieStatement;
-import com.khrushch.movieland.dao.jdbc.query.QueryBuilder;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.model.request.QueryParam;
@@ -24,7 +22,6 @@ public class DefaultMovieServiceTest {
         movieService.setMovieDao(mockMovieDao);
 
         QueryParam queryParam = new MovieQueryParam(new HashMap<>());
-        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
 
         when(mockMovieDao.getAll(queryParam)).thenReturn(getTestMovies());
 
@@ -53,7 +50,6 @@ public class DefaultMovieServiceTest {
         MovieDao mockMovieDao = mock(MovieDao.class);
 
         QueryParam queryParam = new MovieQueryParam(new HashMap<>());
-        String query = QueryBuilder.build(MovieStatement.SELECT_ALL_MOVIES_SQL, queryParam);
 
         when(mockMovieDao.getByGenreId(1, queryParam)).thenReturn(getTestMovies());
 
