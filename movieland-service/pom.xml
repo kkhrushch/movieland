@@ -4,19 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.khrushch</groupId>
-    <artifactId>movieland</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <artifactId>movieland-service</artifactId>
 
-    <modules>
-        <module>movieland-model</module>
-        <module>movieland-dao</module>
-        <module>movieland-dao-jdbc</module>
-        <module>movieland-service</module>
-        <module>movieland-service-default</module>
-        <module>movieland-web</module>
-    </modules>
+    <parent>
+        <groupId>com.khrushch</groupId>
+        <artifactId>movieland</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -80,6 +74,13 @@
 
 
     <dependencies>
+        <!--Movieland-->
+        <dependency>
+            <groupId>com.khrushch</groupId>
+            <artifactId>movieland-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!--WEB-->
         <dependency>
             <groupId>org.springframework</groupId>
