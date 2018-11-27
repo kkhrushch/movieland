@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:app.properties")
+@PropertySource("classpath:app-dao-jdbc.properties")
 public class TaskExecutorConfig {
 
     @Bean
