@@ -1,6 +1,7 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.MovieDao;
+import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.QueryParam;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public class DefaultMovieService implements MovieService {
     private GenreService genreService;
     private CountryService countryService;
     private ReviewService reviewService;
+    private CurrencyService currencyService;
 
     @Override
     public List<Movie> getAll(QueryParam queryParam) {
@@ -51,6 +53,17 @@ public class DefaultMovieService implements MovieService {
         return movie;
     }
 
+    @Override
+    public Movie getById(long id, CurrencyCode currency) {
+        Movie movie = getById(id);
+
+        double priceForCurrency = currencyService.convert(movie.getPrice(), currency);
+        movie.setPrice(priceForCurrency);
+
+        logger.debug("Fetched by id: {}, with price currency: ()", movie, currency);
+        return movie;
+    }
+
     @Autowired
     public void setMovieDao(MovieDao movieDao) {
         this.movieDao = movieDao;
@@ -69,5 +82,10 @@ public class DefaultMovieService implements MovieService {
     @Autowired
     public void setReviewService(ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @Autowired
+    public void setCurrencyService(CurrencyService currencyService) {
+        this.currencyService = currencyService;
     }
 }

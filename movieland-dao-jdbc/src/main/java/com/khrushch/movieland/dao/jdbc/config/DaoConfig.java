@@ -1,4 +1,4 @@
-package com.khrushch.movieland.dao.config;
+package com.khrushch.movieland.dao.jdbc.config;
 
 
 import org.apache.commons.dbcp2.BasicDataSource;

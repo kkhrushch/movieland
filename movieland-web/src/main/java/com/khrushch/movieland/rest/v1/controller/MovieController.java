@@ -1,5 +1,6 @@
 package com.khrushch.movieland.rest.v1.controller;
 
+import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.service.MovieService;
@@ -37,6 +38,11 @@ public class MovieController {
     @GetMapping("/movie/{id}")
     public Movie getById(@PathVariable long id) {
         return movieService.getById(id);
+    }
+
+    @GetMapping(value = "/movie/{id}", params = {"currency"})
+    public Movie getById(@PathVariable long id, @RequestParam String currency) {
+        return movieService.getById(id, CurrencyCode.forName(currency));
     }
 
     @Autowired
