@@ -64,6 +64,29 @@ public class MovieControllerITest {
     }
 
     @Test
+    public void testGetAllWithSorting() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(get("/movie?rating=DESC&price=asc"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String actualJson = mvcResult.getResponse().getContentAsString();
+
+        List<Movie> testMoviesSorted = Arrays.asList(
+                getTestMovies().get(2),
+                getTestMovies().get(0),
+                getTestMovies().get(3),
+                getTestMovies().get(1)
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        String expectedJson = mapper.writeValueAsString(testMoviesSorted);
+
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
+    }
+
+    @Test
     @DirtiesContext
     public void testGetRandom() throws Exception {
         MovieDao mockMovieDao = mock(MovieDao.class);
