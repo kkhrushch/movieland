@@ -13,7 +13,6 @@ public class MovieQueryParam implements QueryParam {
             new SortingParam("price", SortingOrder.ASC),
             new SortingParam("price", SortingOrder.DESC)
     );
-    private static final CurrencyCode DEFAULT_CURRENCY = CurrencyCode.UAH;
 
     private List<SortingParam> sortingParams;
     private CurrencyCode currency;
@@ -39,12 +38,9 @@ public class MovieQueryParam implements QueryParam {
     }
 
     void extractCurrency(Map<String, String> requestParams) {
-        String currencyCodeString = requestParams.get("currency");
-
-        if (currencyCodeString == null) {
-            currency = DEFAULT_CURRENCY;
-        } else {
-            currency = CurrencyCode.forName(currencyCodeString);
+        String currencyCode = requestParams.get("currency");
+        if (currencyCode != null) {
+            currency = CurrencyCode.forName(currencyCode);
         }
     }
 

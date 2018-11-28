@@ -13,7 +13,5 @@ public interface MovieService {
 
     List<Movie> getByGenreId(long genreId, QueryParam queryParam);
 
-    Movie getById(long id);
-
     Movie getById(long id, QueryParam queryParam);
 }

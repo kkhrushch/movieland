@@ -43,24 +43,16 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public Movie getById(long id) {
+    public Movie getById(long id, QueryParam queryParam) {
         Movie movie = movieDao.getById(id);
         genreService.enrich(movie);
         countryService.enrich(movie);
         reviewService.enrich(movie);
 
-        logger.debug("Fetched by id: {}", movie);
-        return movie;
-    }
-
-    @Override
-    public Movie getById(long id, QueryParam queryParam) {
-        Movie movie = getById(id);
-
         double priceForCurrency = currencyService.convert(movie.getPrice(), queryParam.getCurrency());
         movie.setPrice(priceForCurrency);
 
-        logger.debug("Fetched by id: {}, with price currency: ()", movie, queryParam.getCurrency());
+        logger.debug("Fetched by id: {}, with price currency: {}", movie, queryParam.getCurrency());
         return movie;
     }
 
