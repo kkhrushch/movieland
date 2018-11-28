@@ -3,13 +3,20 @@ package com.khrushch.movieland.service;
 import com.khrushch.movieland.dao.CurrencyDao;
 import com.khrushch.movieland.model.CurrencyCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
+@PropertySource("classpath:app-service-default.properties")
 public class DefaultCurrencyService implements CurrencyService {
-    private static final CurrencyCode DEFAULT_CURRENCY = CurrencyCode.UAH;
+    private CurrencyCode DEFAULT_CURRENCY = CurrencyCode.forName(@Value(""));
 
     private CurrencyDao currencyDao;
+
+    public DefaultCurrencyService() {
+        @Value("")
+    }
 
     @Override
     public double convert(double price, CurrencyCode toCurrency) {

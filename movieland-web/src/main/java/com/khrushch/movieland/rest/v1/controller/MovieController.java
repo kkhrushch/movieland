@@ -29,20 +29,13 @@ public class MovieController {
     }
 
     @GetMapping("/movie/genre/{genreId}")
-    public List<Movie> getByGenreId(
-            @PathVariable long genreId,
-            @RequestParam Map<String, String> requestParams) {
+    public List<Movie> getByGenreId(@PathVariable long genreId, @RequestParam Map<String, String> requestParams) {
         return movieService.getByGenreId(genreId, new MovieQueryParam(requestParams));
     }
 
     @GetMapping("/movie/{id}")
-    public Movie getById(@PathVariable long id) {
-        return movieService.getById(id);
-    }
-
-    @GetMapping(value = "/movie/{id}", params = {"currency"})
-    public Movie getById(@PathVariable long id, @RequestParam String currency) {
-        return movieService.getById(id, CurrencyCode.forName(currency));
+    public Movie getById(@PathVariable long id, @RequestParam Map<String,String> requestParam) {
+        return movieService.getById(id, new MovieQueryParam(requestParam));
     }
 
     @Autowired

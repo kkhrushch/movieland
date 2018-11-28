@@ -54,13 +54,13 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
-    public Movie getById(long id, CurrencyCode currency) {
+    public Movie getById(long id, QueryParam queryParam) {
         Movie movie = getById(id);
 
-        double priceForCurrency = currencyService.convert(movie.getPrice(), currency);
+        double priceForCurrency = currencyService.convert(movie.getPrice(), queryParam.getCurrency());
         movie.setPrice(priceForCurrency);
 
-        logger.debug("Fetched by id: {}, with price currency: ()", movie, currency);
+        logger.debug("Fetched by id: {}, with price currency: ()", movie, queryParam.getCurrency());
         return movie;
     }
 

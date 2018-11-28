@@ -15,5 +15,5 @@ public interface MovieService {
 
     Movie getById(long id);
 
-    Movie getById(long id, CurrencyCode currency);
+    Movie getById(long id, QueryParam queryParam);
 }
