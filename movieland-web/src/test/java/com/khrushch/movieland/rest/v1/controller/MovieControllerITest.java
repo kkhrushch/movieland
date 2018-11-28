@@ -167,8 +167,6 @@ public class MovieControllerITest {
 
         String actualJson = mvcResult.getResponse().getContentAsString();
 
-        ObjectMapper mapper = new ObjectMapper();
-
         Movie expectedMovie = getTestMovieWithAllFieldsSet();
         expectedMovie.setPrice(expectedMovie.getPrice() * usdRate);
 
