@@ -16,19 +16,23 @@ import java.util.List;
 
 @Repository
 public class NbuCurrencyDao implements CurrencyDao {
+    private static final ParameterizedTypeReference<List<CurrencyRate>> PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<List<CurrencyRate>>(){};
+
+    //visibility for tests
     @Value("${currency.api.url}")
-    private String url;
+    String url;
 
     private RestTemplate restTemplate;
 
     public double getRate(CurrencyCode toCurrency) {
         String uri = buildUri(toCurrency);
+
         ResponseEntity<List<CurrencyRate>> currencyRates = restTemplate.exchange(
                 uri,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<List<CurrencyRate>>() {
-                });
+                PARAMETERIZED_TYPE_REFERENCE);
+
         double rate = 1D / currencyRates.getBody().get(0).getRate();
         return rate;
     }
