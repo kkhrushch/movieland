@@ -29,7 +29,7 @@ public class NbuCurrencyDao implements CurrencyDao {
                 null,
                 new ParameterizedTypeReference<List<CurrencyRate>>() {
                 });
-        double rate = 1L / currencyRates.getBody().get(0).getRate();
+        double rate = 1D / currencyRates.getBody().get(0).getRate();
         return rate;
     }
 
