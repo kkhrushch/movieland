@@ -12,15 +12,17 @@
 
     <context:property-placeholder location="classpath:app.properties" />
 
+    <jdbc:embedded-database id="dataSource" type="HSQL"/>
+
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="changeLog" value="classpath:databaseChangeLog.xml"/>
+    </bean>
+
     <context:component-scan base-package="com.khrushch.movieland">
         <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.rest\..*"/>
-        <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.com.khrushch.movieland.config\.DaoConfig"/>
+        <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.dao\.config\.DaoConfig"/>
     </context:component-scan>
-
-    <jdbc:embedded-database id="dataSource" type="HSQL">
-        <jdbc:script location="classpath:db/sql/create-db.sql" />
-        <jdbc:script location="classpath:db/sql/insert-data.sql" />
-    </jdbc:embedded-database>
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"/>
