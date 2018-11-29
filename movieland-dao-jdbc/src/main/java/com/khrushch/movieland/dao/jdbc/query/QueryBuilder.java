@@ -21,6 +21,6 @@ public class QueryBuilder {
     }
 
     private static String wrapWithSelect(String innerQuery) {
-        return "SELECT * FROM (" + innerQuery + ")";
+        return "SELECT * FROM (" + innerQuery + ") s ";
     }
 }

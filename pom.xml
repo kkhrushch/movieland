@@ -13,6 +13,7 @@
         <module>movieland-model</module>
         <module>movieland-dao</module>
         <module>movieland-dao-jdbc</module>
+        <module>movieland-dao-rest</module>
         <module>movieland-service</module>
         <module>movieland-service-default</module>
         <module>movieland-web</module>
@@ -96,6 +97,11 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>5.1.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

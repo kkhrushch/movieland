@@ -10,8 +10,6 @@
     http://www.springframework.org/schema/jdbc
     http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
-    <context:property-placeholder location="classpath:app.properties" />
-
     <jdbc:embedded-database id="dataSource" type="HSQL"/>
 
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
@@ -21,7 +19,8 @@
 
     <context:component-scan base-package="com.khrushch.movieland">
         <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.rest\..*"/>
-        <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.dao\.config\.DaoConfig"/>
+        <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.dao\.jdbc\.config\.DaoConfig"/>
+        <context:exclude-filter type="regex" expression="com\.khrushch\.movieland\.dao\.rest\.config\.TaskExecutorConfig"/>
     </context:component-scan>
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">

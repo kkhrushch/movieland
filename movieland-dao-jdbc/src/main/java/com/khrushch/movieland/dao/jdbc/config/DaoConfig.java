@@ -1,4 +1,4 @@
-package com.khrushch.movieland.dao.config;
+package com.khrushch.movieland.dao.jdbc.config;
 
 
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:app.properties")
+@PropertySource("classpath:app-dao-jdbc.properties")
 public class DaoConfig {
     @Value("${jdbc.url}")
     private String url;
