@@ -1,49 +1,54 @@
 package com.khrushch.movieland.dao.rest;
 
 import com.khrushch.movieland.dao.CurrencyDao;
+import com.khrushch.movieland.dao.rest.mapper.CurrencyRateMapper;
 import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.CurrencyRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 @Repository
 public class NbuCurrencyDao implements CurrencyDao {
-    private static final ParameterizedTypeReference<List<CurrencyRate>> PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<List<CurrencyRate>>(){};
+    private static final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private static final CurrencyRateMapper CURRENCY_RATE_MAPPER = new CurrencyRateMapper();
 
     //visibility for tests
     @Value("${currency.api.url}")
     String url;
-
     private RestTemplate restTemplate;
+    private Map<CurrencyCode, Double> cachedRates;
 
     public double getRate(CurrencyCode toCurrency) {
-        String uri = buildUri(toCurrency);
+        double rate = 0;
+        readWriteLock.readLock().lock();
+        rate = cachedRates.get(toCurrency);
+        readWriteLock.readLock().unlock();
 
-        ResponseEntity<List<CurrencyRate>> currencyRates = restTemplate.exchange(
-                uri,
-                HttpMethod.GET,
-                null,
-                PARAMETERIZED_TYPE_REFERENCE);
-
-        double rate = 1D / currencyRates.getBody().get(0).getRate();
         return rate;
     }
 
-    private String buildUri(CurrencyCode toCurrency) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("json")
-                .queryParam("valcode", toCurrency);
-        String uri = builder.toUriString();
+    @Scheduled(cron = "${cache.refresh.schedule}")
+    @PostConstruct
+    void refreshCache() throws IOException {
+        readWriteLock.writeLock().lock();
 
-        return uri;
+        String currencyRatesJson = restTemplate.getForObject(url, String.class);
+        List<CurrencyRate> rates = CURRENCY_RATE_MAPPER.map(currencyRatesJson);
+        cachedRates = rates.stream()
+                .collect(Collectors.toMap(CurrencyRate::getCurrencyCode, CurrencyRate::getRate));
+
+        readWriteLock.writeLock().unlock();
     }
 
     @Autowired

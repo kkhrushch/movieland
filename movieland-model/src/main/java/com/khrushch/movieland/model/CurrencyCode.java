@@ -14,4 +14,13 @@ public enum CurrencyCode {
         throw new IllegalArgumentException("Cannot get SortingOrder for name: " + name);
     }
 
+    public static Boolean isValidCurrencyCode(String name) {
+        for (CurrencyCode value : values()) {
+            if (value.name().equalsIgnoreCase(name.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
