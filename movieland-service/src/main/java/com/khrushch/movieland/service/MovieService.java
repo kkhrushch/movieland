@@ -1,5 +1,6 @@
 package com.khrushch.movieland.service;
 
+import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.QueryParam;
 
@@ -12,5 +13,5 @@ public interface MovieService {
 
     List<Movie> getByGenreId(long genreId, QueryParam queryParam);
 
-    Movie getById(long id);
+    Movie getById(long id, QueryParam queryParam);
 }

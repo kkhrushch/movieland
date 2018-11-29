@@ -6,6 +6,9 @@ public class User {
     private long id;
     private String nickname;
 
+    public User() {
+    }
+
     public User(long id, String nickname) {
         this.id = id;
         this.nickname = nickname;

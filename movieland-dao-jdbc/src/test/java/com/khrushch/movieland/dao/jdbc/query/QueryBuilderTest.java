@@ -24,7 +24,7 @@ public class QueryBuilderTest {
         QueryParam queryParam = new MovieQueryParam(requestParams);
 
         String actualQuery = QueryBuilder.build(initialQuery, queryParam);
-        String expectedQuery = "SELECT * FROM (" + initialQuery + ") ORDER BY price ASC,rating DESC";
+        String expectedQuery = "SELECT * FROM (" + initialQuery + ") s  ORDER BY price ASC,rating DESC";
 
         assertEquals(expectedQuery, actualQuery);
     }
@@ -39,7 +39,7 @@ public class QueryBuilderTest {
         );
 
         String actualQuery = QueryBuilder.addOrderBy(initialQuery, sortingParams);
-        String expectedQuery = "SELECT * FROM (" + initialQuery + ") ORDER BY price ASC,rating DESC";
+        String expectedQuery = "SELECT * FROM (" + initialQuery + ") s  ORDER BY price ASC,rating DESC";
 
         assertEquals(expectedQuery, actualQuery);
     }

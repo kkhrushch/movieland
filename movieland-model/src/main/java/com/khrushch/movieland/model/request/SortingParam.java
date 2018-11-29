@@ -11,6 +11,14 @@ public class SortingParam {
         this.sortingOrder = sortingOrder;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public SortingOrder getSortingOrder() {
+        return sortingOrder;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
