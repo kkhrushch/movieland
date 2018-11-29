@@ -1,26 +1,24 @@
-package com.khrushch.movieland.dao.rest;
+package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.dao.CurrencyDao;
-import com.khrushch.movieland.dao.rest.mapper.CurrencyRateMapper;
 import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.CurrencyRate;
+import com.khrushch.movieland.service.mapper.CurrencyRateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-@Repository
-public class NbuCurrencyDao implements CurrencyDao {
+@Service
+public class NbuCurrencyService implements CurrencyService {
     private static final CurrencyRateMapper CURRENCY_RATE_MAPPER = new CurrencyRateMapper();
+    private CurrencyCode defaultCurrency;
 
     //visibility for tests
     @Value("${currency.api.url}")
@@ -28,8 +26,17 @@ public class NbuCurrencyDao implements CurrencyDao {
     private RestTemplate restTemplate;
     private volatile Map<CurrencyCode, Double> cachedRates;
 
-    public double getRate(CurrencyCode toCurrency) {
-        return cachedRates.get(toCurrency);
+    public NbuCurrencyService(@Value("${currency.default}") String currencyCode) {
+        defaultCurrency = CurrencyCode.forName(currencyCode);
+    }
+
+    @Override
+    public double convert(double price, CurrencyCode toCurrency) {
+        if (toCurrency == null || toCurrency == defaultCurrency) {
+            return price;
+        } else {
+            return price * cachedRates.get(toCurrency);
+        }
     }
 
     @Scheduled(cron = "${cache.refresh.schedule}")
