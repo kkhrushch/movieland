@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CurrencyRateMapper {
+    private static final ObjectMapper mapper = new ObjectMapper();
     public List<CurrencyRate> map(String json) throws IOException {
-        JsonNode root = new ObjectMapper().readTree(json);
+        JsonNode root = mapper.readTree(json);
         Iterator<JsonNode> iterator = root.elements();
         List<CurrencyRate> rates = new ArrayList<>();
 

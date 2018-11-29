@@ -1,8 +1,8 @@
 package com.khrushch.movieland.model;
 
 public class CurrencyRate {
-    CurrencyCode currencyCode;
-    double rate;
+    private CurrencyCode currencyCode;
+    private double rate;
 
     public CurrencyRate(CurrencyCode currencyCode, double rate) {
         this.currencyCode = currencyCode;
