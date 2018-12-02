@@ -38,6 +38,13 @@
             <artifactId>spring-context</artifactId>
         </dependency>
 
+        <!--Other-->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
         <!--LOG-->
         <dependency>
             <groupId>ch.qos.logback</groupId>

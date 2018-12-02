@@ -47,6 +47,7 @@ VALUES
 (
   (1, 'a@gmail.com', 'passA', 'USER', 'FirstNameA', 'LastNameA', 'a nickname')
 , (2, 'b@gmail.com', 'passB', 'USER', 'FirstNameB', 'LastNameB', 'another nickname')
+, (3, 'ronald.reynolds66@example.com', '$2a$10$03jNpS5HrO4So/Bm/yNF/OuJb/HON7Qn4/1CoaUwly4Aaiw2Qk/iO', 'USER', 'Рональд', 'Рейнольдс', 'Рональд Рейнольдс')
 )
 
 INSERT INTO movie_review(id, movie_id, app_user_id, text)
@@ -55,3 +56,24 @@ VALUES
   (1, 1, 1, 'a review')
 , (2, 1, 2, 'another review')
 );
+
+insert into role_resource_permission (id, role, url_pattern, http_method)
+values
+(
+  (1, 'GUEST', '/v1/movie', 'GET')
+, (2, 'GUEST', '/v1/movie/\d+', 'GET')
+, (3, 'GUEST', '/v1/movie/random', 'GET')
+, (4, 'GUEST', '/v1/movie/genre/\d+', 'GET')
+, (5, 'GUEST', '/v1/genre', 'GET')
+, (6, 'GUEST', '/v1/login', 'POST')
+
+, (7, 'USER', '/v1/movie', 'GET')
+, (8, 'USER', '/v1/movie/\d+', 'GET')
+, (9, 'USER', '/v1/movie/random', 'GET')
+, (10, 'USER', '/v1/movie/genre/\d+', 'GET')
+, (11, 'USER', '/v1/genre', 'GET')
+, (12, 'USER', '/v1/login', 'POST')
+, (13, 'USER', '/v1/logout', 'DELETE')
+)
+;
+
