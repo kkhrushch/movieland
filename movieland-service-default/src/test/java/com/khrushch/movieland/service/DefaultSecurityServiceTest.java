@@ -1,13 +1,11 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.SecurityDao;
-import com.khrushch.movieland.dao.UserDao;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Session;
 import com.khrushch.movieland.model.User;
 import com.khrushch.movieland.model.security.HttpMethod;
 import com.khrushch.movieland.model.security.ResourceEndpoint;
-import com.khrushch.movieland.model.security.RolePermission;
 import com.khrushch.movieland.model.security.UserRole;
 import com.khrushch.movieland.service.exception.AuthenticationException;
 import org.junit.Test;
@@ -239,8 +237,47 @@ public class DefaultSecurityServiceTest {
 
     }
 
+    @Test(expected = AuthenticationException.class)
+    public void testGetUserByUuid_With_NullUuid() {
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService();
+        defaultSecurityService.getUserByUuid(null);
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void testGetUserByUuid_With_InvalidUuid(){
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        UserRole role = new UserRole("GUEST");
+        expectedUser.setRole(role);
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+
+        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
+        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
+
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
+        defaultSecurityService.getUserByUuid("invalidUuid");
+    }
+
     @Test
-    public void testInit(){
+    public void testGetUserByUuid_With_ValidUuid(){
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        UserRole role = new UserRole("GUEST");
+        expectedUser.setRole(role);
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+
+        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
+        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
+
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
+        User actualUser = defaultSecurityService.getUserByUuid("uuid-1");
+
+        assertEquals(expectedUser, actualUser);
+
+    }
+
+    @Test
+    public void testInit() {
         SecurityDao mockSecurityDao = mock(SecurityDao.class);
 
         DefaultSecurityService defaultSecurityService = new DefaultSecurityService();

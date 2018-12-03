@@ -92,6 +92,17 @@ public class DefaultSecurityService implements SecurityService {
                 .anyMatch(p -> requestUrl.matches(p.getUrlPattern()) && p.getHttpMethod() == HttpMethod.fromString(httpMethod));
     }
 
+    public User getUserByUuid(String uuid){
+        if(uuid == null){
+            throw new AuthenticationException();
+        }
+        Session session = sessions.get(uuid);
+        if(session == null){
+            throw new AuthenticationException();
+        }
+        return session.getUser();
+    }
+
     @PostConstruct
     void init() {
         Map<UserRole, List<ResourceEndpoint>> permissions = securityDao.getRolePermissions().stream()
