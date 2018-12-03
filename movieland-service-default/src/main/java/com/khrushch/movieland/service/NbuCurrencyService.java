@@ -39,7 +39,7 @@ public class NbuCurrencyService implements CurrencyService {
         }
     }
 
-    @Scheduled(cron = "${cache.refresh.schedule}")
+    @Scheduled(cron = "${currency.cache.refresh.schedule}")
     @PostConstruct
     void refreshCache() throws IOException {
         String currencyRatesJson = restTemplate.getForObject(url, String.class);
