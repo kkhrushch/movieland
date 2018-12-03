@@ -4,6 +4,7 @@ import com.khrushch.movieland.dao.SecurityDao;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Session;
 import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.model.security.HttpMethod;
 import com.khrushch.movieland.model.security.ResourceEndpoint;
 import com.khrushch.movieland.model.security.RolePermission;
 import com.khrushch.movieland.model.security.UserRole;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,10 +27,10 @@ import static java.util.stream.Collectors.*;
 
 @Service
 public class DefaultSecurityService implements SecurityService {
-    private static final ConcurrentHashMap<String, Session> SESSIONS = new ConcurrentHashMap<>();
     private static final UserRole DEFAULT_ROLE = new UserRole("GUEST");
 
-    private Map<UserRole, List<ResourceEndpoint>> rolePermission;
+    private final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+    private final Map<UserRole, List<ResourceEndpoint>> rolePermission = new HashMap<>();
 
     @Value("${session.ttl.hours}")
     private long sessionTtlHours;
@@ -36,6 +38,18 @@ public class DefaultSecurityService implements SecurityService {
     private SecurityDao securityDao;
 
     private UserService userService;
+
+    public DefaultSecurityService() {
+    }
+
+    // for testing
+    DefaultSecurityService(Map<UserRole, List<ResourceEndpoint>> rolePermission, ConcurrentHashMap<String, Session> sessions){
+        this.rolePermission.clear();
+        this.rolePermission.putAll(rolePermission);
+
+        this.sessions.clear();
+        this.sessions.putAll(sessions);
+    }
 
     @Override
     public UserCredentialsDto doLogin(UserCredentialsDto userCredentials) {
@@ -59,14 +73,14 @@ public class DefaultSecurityService implements SecurityService {
         userWithoutPassword.setRole(user.getRole());
 
         Session session = new Session(userWithoutPassword, expirationTime);
-        SESSIONS.put(uuid, session);
+        sessions.put(uuid, session);
 
         return new UserCredentialsDto(uuid, userWithoutPassword.getNickname());
     }
 
     @Override
     public void doLogout(String uuid) {
-        SESSIONS.remove(uuid);
+        sessions.remove(uuid);
     }
 
     @Override
@@ -75,25 +89,26 @@ public class DefaultSecurityService implements SecurityService {
         return rolePermission.entrySet().stream()
                 .filter(e -> e.getKey().equals(role))
                 .flatMap(e -> e.getValue().stream())
-                .anyMatch(p -> requestUrl.matches(p.getUrlPattern()));
+                .anyMatch(p -> requestUrl.matches(p.getUrlPattern()) && p.getHttpMethod() == HttpMethod.fromString(httpMethod));
     }
 
     @PostConstruct
     void init() {
-        rolePermission = securityDao.getRolePermissions().stream()
+        Map<UserRole, List<ResourceEndpoint>> permissions = securityDao.getRolePermissions().stream()
                 .collect(groupingBy(RolePermission::getRole, mapping(RolePermission::getEndpoint, toList())));
+        rolePermission.putAll(permissions);
     }
 
     @Scheduled(fixedDelayString = "${session.cleanup.interval.hours}", initialDelayString = "${session.cleanup.interval.hours}")
     void cleanUpExpiredSessions() {
         LocalDateTime now = LocalDateTime.now();
-        SESSIONS.values().removeIf(s -> s.getExpirationTime().isBefore(now));
+        sessions.values().removeIf(s -> s.getExpirationTime().isBefore(now));
     }
 
     private UserRole getUserRole(String uuid) {
-        Session session = SESSIONS.get(uuid);
+        Session session = sessions.get(uuid);
         if (session != null && session.getExpirationTime().isBefore(LocalDateTime.now())) {
-            SESSIONS.remove(uuid);
+            sessions.remove(uuid);
             throw new AuthenticationException();
         }
         return session == null ? DEFAULT_ROLE : session.getUser().getRole();

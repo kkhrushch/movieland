@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RolePermissionRowMapper implements RowMapper<RolePermission> {
-
-
     @Override
     public RolePermission mapRow(ResultSet rs, int rowNum) throws SQLException {
         UserRole role = new UserRole(rs.getString("role"));
