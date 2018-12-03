@@ -1,4 +1,4 @@
-package com.khrushch.movieland.dao.rest.mapper;
+package com.khrushch.movieland.service.mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -36,11 +36,6 @@
             <artifactId>movieland-dao-jdbc</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.khrushch</groupId>
-            <artifactId>movieland-dao-rest</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <!--WEB-->
         <dependency>

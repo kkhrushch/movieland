@@ -13,7 +13,6 @@
         <module>movieland-model</module>
         <module>movieland-dao</module>
         <module>movieland-dao-jdbc</module>
-        <module>movieland-dao-rest</module>
         <module>movieland-service</module>
         <module>movieland-service-default</module>
         <module>movieland-web</module>

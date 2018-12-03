@@ -1,10 +1,9 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.khrushch.movieland.dao.CurrencyDao;
 import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.model.*;
-import com.khrushch.movieland.service.DefaultCurrencyService;
+import com.khrushch.movieland.service.CurrencyService;
 import com.khrushch.movieland.service.DefaultMovieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +27,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -152,12 +152,14 @@ public class MovieControllerITest {
     @Test
     @DirtiesContext
     public void testGetByIdWithCurrency() throws Exception {
-        CurrencyDao mockCurrencyDao = mock(CurrencyDao.class);
-        double usdRate = 1 / 28.5;
-        when(mockCurrencyDao.getRate(CurrencyCode.USD)).thenReturn(usdRate);
+        CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
-        DefaultCurrencyService currencyService = wac.getBean(DefaultCurrencyService.class);
-        currencyService.setCurrencyDao(mockCurrencyDao);
+        double usdRate = 1 / 28.5;
+        Movie expectedMovie = getTestMovieWithAllFieldsSet();
+        when(mockCurrencyService.convert(anyDouble(), any(CurrencyCode.class))).thenReturn(getTestMovieWithAllFieldsSet().getPrice() * usdRate);
+
+        DefaultMovieService mockDefaultMovieService = wac.getBean(DefaultMovieService.class);
+        mockDefaultMovieService.setCurrencyService(mockCurrencyService);
 
         MvcResult mvcResult = mockMvc.perform(get("/movie/1?currency=Usd"))
                 .andDo(print())
@@ -167,11 +169,11 @@ public class MovieControllerITest {
 
         String actualJson = mvcResult.getResponse().getContentAsString();
 
-        Movie expectedMovie = getTestMovieWithAllFieldsSet();
         expectedMovie.setPrice(expectedMovie.getPrice() * usdRate);
 
         Movie actualMovie = new ObjectMapper().readValue(actualJson, Movie.class);
 
+        verify(mockCurrencyService, times(1)).convert(anyDouble(), any(CurrencyCode.class));
         assertEquals(expectedMovie.getId(), actualMovie.getId());
         assertEquals(expectedMovie.getPrice(), actualMovie.getPrice(), 0.001);
         assertEquals(expectedMovie.getYearOfRelease(), actualMovie.getYearOfRelease());
