@@ -7,7 +7,7 @@ CREATE TABLE role_resource_permission
 ;
 
 CREATE TABLE movie_review
-( id                      int    NOT NULL
+( id                      int
 , movie_id                int    NOT NULL
 , app_user_id             int    NOT NULL
 , text                    varchar(1000)      NOT NULL

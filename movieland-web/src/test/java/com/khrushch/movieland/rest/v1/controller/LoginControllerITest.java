@@ -2,6 +2,8 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dto.UserCredentialsDto;
+import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +40,7 @@ public class LoginControllerITest {
     }
 
     @Test
-    public void testDoLoginSuccess() throws Exception {
+    public void testDoLogin_Success() throws Exception {
         String requestCredentialsJson = "{\"email\":\"ronald.reynolds66@example.com\", \"password\":\"paco\"}";
 
         MvcResult mvcResult = mockMvc.perform(post("/login")
@@ -61,7 +63,7 @@ public class LoginControllerITest {
     }
 
     @Test
-    public void testDoLoginWithInvalidCredentials() throws Exception {
+    public void testDoLogin_With_InvalidCredentials() throws Exception {
         String requestCredentialsJson = "{\"email\":\"ronald.reynolds66@example.com\", \"password\":\"pacoZZZ\"}";
 
         MvcResult mvcResult = mockMvc.perform(post("/login")
@@ -77,7 +79,7 @@ public class LoginControllerITest {
     }
 
     @Test
-    public void testDoLoginSuccessfullyAndLogoutSuccessfully() throws Exception {
+    public void testDoLoginSuccessfully_And_LogoutSuccessfully() throws Exception {
         // Login
         String loginRequestCredentialsJson = "{\"email\":\"ronald.reynolds66@example.com\", \"password\":\"paco\"}";
 
@@ -90,10 +92,14 @@ public class LoginControllerITest {
 
         String loginResponseCredentialsJson = mvcResultLogin.getResponse().getContentAsString();
 
-        UserCredentialsDto expectedLoginCredentials = new UserCredentialsDto("UUID12345", "Рональд Рейнольдс");
+        UserCredentialsDto expectedLoginCredentials = new UserCredentialsDto("UUID-ANY", "Рональд Рейнольдс");
         UserCredentialsDto actualLoginCredentials = OBJECT_MAPPER.readValue(loginResponseCredentialsJson, UserCredentialsDto.class);
 
         // Logout
+        User user = new User();
+        user.setId(3);
+        CurrentUserHolder.setUser(user);
+
         MvcResult mvcResultLogout = mockMvc.perform(delete("/logout")
                 .header("uuid", actualLoginCredentials.getUuid()))
                 .andExpect(status().isOk())

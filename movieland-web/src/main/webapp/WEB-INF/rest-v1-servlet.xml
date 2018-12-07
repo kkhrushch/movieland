@@ -11,5 +11,11 @@
 
     <context:component-scan base-package="com.khrushch.movieland.rest.v1"/>
     <mvc:annotation-driven/>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/v1/**"/>
+            <bean id="userInterceptor" class="com.khrushch.movieland.rest.v1.interceptor.UserHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

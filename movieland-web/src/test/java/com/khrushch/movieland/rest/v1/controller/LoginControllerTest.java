@@ -1,6 +1,8 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.dto.UserCredentialsDto;
+import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
 import com.khrushch.movieland.service.SecurityService;
 import org.junit.Test;
 
@@ -35,15 +37,19 @@ public class LoginControllerTest {
 
     @Test
     public void testDoLogout() {
-        String uuid = "uuid12345";
+        User user = new User();
+        user.setId(1);
+        user.setNickname("aNickname");
+        user.setRole("aRole");
 
         SecurityService mockSecurityService = mock(SecurityService.class);
 
         LoginController loginController = new LoginController();
         loginController.setSecurityService(mockSecurityService);
 
-        loginController.doLogout(uuid);
+        CurrentUserHolder.setUser(user);
+        loginController.doLogout();
 
-        verify(mockSecurityService, times(1)).doLogout(uuid);
+        verify(mockSecurityService, times(1)).doLogout(user);
     }
 }

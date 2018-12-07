@@ -1,13 +1,8 @@
 package com.khrushch.movieland.service;
 
-import com.khrushch.movieland.dao.SecurityDao;
-import com.khrushch.movieland.dao.UserDao;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Session;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.model.security.HttpMethod;
-import com.khrushch.movieland.model.security.ResourceEndpoint;
-import com.khrushch.movieland.model.security.RolePermission;
 import com.khrushch.movieland.model.security.UserRole;
 import com.khrushch.movieland.service.exception.AuthenticationException;
 import org.junit.Test;
@@ -21,7 +16,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DefaultSecurityServiceTest {
 
@@ -107,148 +103,80 @@ public class DefaultSecurityServiceTest {
     public void testDoLogout_With_ValidUuid() {
         ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
         User user = new User();
-        UserRole role = new UserRole("USER");
-        user.setRole(role);
+        user.setId(1);
+        user.setRole("USER");
         sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
 
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
 
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
-
+        boolean isAuth = DefaultSecurityService.SESSIONS.values().stream()
+                .anyMatch(s -> s.getUser().getId() == 1);
         assertTrue(isAuth);
 
-        defaultSecurityService.doLogout("uuid-1");
-
-        isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
-
+        defaultSecurityService.doLogout(user);
+        isAuth = DefaultSecurityService.SESSIONS.values().stream()
+                .anyMatch(s -> s.getUser().getId() == 1);
         assertFalse(isAuth);
 
-    }
-
-    @Test
-    public void testDoLogout_With_InalidUuid() {
-        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
-        User user = new User();
-        UserRole role = new UserRole("USER");
-        user.setRole(role);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
-
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
-
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
-        assertTrue(isAuth);
-
-        defaultSecurityService.doLogout("uuid-2");
-        isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
-        assertTrue(isAuth);
-
-        isAuth = defaultSecurityService.isAuthorized("uuid-2", "/v1/movie", "GET");
-        assertFalse(isAuth);
-
-    }
-
-    @Test
-    public void testIsAuthorized_With_ValidUuid_And_GuestRole() {
-        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
-        User user = new User();
-        UserRole role = new UserRole("GUEST");
-        user.setRole(role);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
-
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
-
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
-
-        assertTrue(isAuth);
-    }
-
-    @Test
-    public void testIsAuthorized_With_InvalidUuid_And_AllowedResourceForGuest() {
-        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
-        User user = new User();
-        UserRole role = new UserRole("GUEST");
-        user.setRole(role);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
-
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
-
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-2", "/v1/movie", "GET");
-
-        assertTrue(isAuth);
-    }
-
-    @Test
-    public void testIsAuthorized_With_InvalidUuid_And_Not_AllowedResourceForGuest() {
-        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
-        User user = new User();
-        UserRole role = new UserRole("GUEST");
-        user.setRole(role);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
-
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
-
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-2", "/v1/movie/33", "GET");
-
-        assertFalse(isAuth);
-    }
-
-    @Test
-    public void testIsAuthorized_With_ValidUuid_And_ResourceAllowedForUser() {
-        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
-        User user = new User();
-        UserRole userRole = new UserRole("USER");
-        user.setRole(userRole);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
-
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        UserRole guestRole = new UserRole("GUEST");
-        permissions.put(guestRole, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
-        permissions.put(userRole, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.POST)));
-
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "POST");
-
-        assertTrue(isAuth);
     }
 
     @Test(expected = AuthenticationException.class)
-    public void testIsAuthorized_With_SessionTimeout() {
+    public void testDoLogout_With_InalidUuid() {
         ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
         User user = new User();
-        UserRole role = new UserRole("GUEST");
-        user.setRole(role);
-        sessions.put("uuid-1", new Session(user, LocalDateTime.now().minusHours(1)));
+        user.setId(1);
+        user.setRole("USER");
+        sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
 
-        Map<UserRole, List<ResourceEndpoint>> permissions = new HashMap<>();
-        permissions.put(role, Arrays.asList(new ResourceEndpoint("/v1/movie", HttpMethod.GET)));
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
 
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(permissions, sessions);
-        boolean isAuth = defaultSecurityService.isAuthorized("uuid-1", "/v1/movie", "GET");
+        boolean isAuth = DefaultSecurityService.SESSIONS.values().stream()
+                .anyMatch(s -> s.getUser().getId() == 1);
+        assertTrue(isAuth);
+
+        defaultSecurityService.doLogout(new User());
+    }
+
+    @Test
+    public void testGetUserByUuid_With_NullUuid() {
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService();
+        User user = defaultSecurityService.getUserByUuid(null);
+
+        assertNull(user);
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void testGetUserByUuid_With_InvalidUuid() {
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
+        defaultSecurityService.getUserByUuid("uuid-INVALID");
+    }
+
+    @Test(expected = AuthenticationException.class)
+    public void testGetUserByUuid_With_ValidUuid_And_ExpiredSession() {
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
+        User actualUser = defaultSecurityService.getUserByUuid("uuid-1");
 
     }
 
     @Test
-    public void testInit(){
-        SecurityDao mockSecurityDao = mock(SecurityDao.class);
+    public void testGetUserByUuid_With_ValidUuid() {
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().plusHours(1)));
 
-        DefaultSecurityService defaultSecurityService = new DefaultSecurityService();
-        defaultSecurityService.setSecurityDao(mockSecurityDao);
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
+        User actualUser = defaultSecurityService.getUserByUuid("uuid-1");
 
-        defaultSecurityService.init();
+        assertEquals(expectedUser, actualUser);
 
-        verify(mockSecurityDao, times(1)).getRolePermissions();
     }
 
 }

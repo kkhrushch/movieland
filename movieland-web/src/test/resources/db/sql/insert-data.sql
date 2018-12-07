@@ -74,6 +74,7 @@ values
 , (11, 'USER', '/v1/genre', 'GET')
 , (12, 'USER', '/v1/login', 'POST')
 , (13, 'USER', '/v1/logout', 'DELETE')
+, (14, 'USER', '/v1/review', 'POST')
 )
 ;
 

@@ -1,18 +1,24 @@
 package com.khrushch.movieland.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Review {
     private long id;
+    private long movieId;
     private User user;
     private String text;
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getId() {
         return id;
+    }
+
+    public long getMovieId() {
+        return movieId;
     }
 
     public User getUser() {
@@ -21,6 +27,14 @@ public class Review {
 
     public String getText() {
         return text;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setMovieId(long movieId) {
+        this.movieId = movieId;
     }
 
     public void setUser(User user) {

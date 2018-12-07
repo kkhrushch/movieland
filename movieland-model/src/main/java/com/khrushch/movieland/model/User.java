@@ -1,16 +1,11 @@
 package com.khrushch.movieland.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.khrushch.movieland.model.security.UserRole;
-
 import java.util.Objects;
 
 public class User {
     private long id;
     private String nickname;
-    @JsonIgnore
-    private UserRole role;
-    @JsonIgnore
+    private String role;
     private String password;
 
     public User() {
@@ -21,7 +16,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public User(long id, String nickname, UserRole role) {
+    public User(long id, String nickname, String role) {
         this(id, nickname);
         this.role = role;
     }
@@ -34,7 +29,7 @@ public class User {
         return nickname;
     }
 
-    public UserRole getRole() {
+    public String getRole() {
         return role;
     }
 
@@ -50,7 +45,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

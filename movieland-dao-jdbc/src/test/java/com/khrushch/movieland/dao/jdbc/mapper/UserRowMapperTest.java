@@ -24,7 +24,7 @@ public class UserRowMapperTest {
         User expectedUser = new User();
         expectedUser.setId(1L);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole(new UserRole("aRole"));
+        expectedUser.setRole("aRole");
         expectedUser.setPassword("aPassword");
 
         UserRowMapper mapper = new UserRowMapper();
