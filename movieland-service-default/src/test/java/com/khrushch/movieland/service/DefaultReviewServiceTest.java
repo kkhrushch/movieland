@@ -1,7 +1,6 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.ReviewDao;
-import com.khrushch.movieland.dto.ReviewDto;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.Review;
 import com.khrushch.movieland.model.User;
@@ -22,9 +21,6 @@ public class DefaultReviewServiceTest {
     @Mock
     private ReviewDao mockReviewDao;
 
-    @Mock
-    private SecurityService mockSecurityService;
-
     @InjectMocks
     private DefaultReviewService defaultReviewService;
 
@@ -42,23 +38,17 @@ public class DefaultReviewServiceTest {
 
     @Test
     public void testAddReview() {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setUuid("uuid");
-        reviewDto.setMovieId(1);
-        reviewDto.setText("aText");
+        Review review = new Review();
+        review.setMovieId(1);
+        review.setText("aText");
+        User user = new User();
+        user.setId(1);
+        user.setRole("USER");
+        review.setUser(user);
 
-        User user = new User(1, "aNickname");
-        when(mockSecurityService.getUserByUuid(reviewDto.getUuid())).thenReturn(user);
+        defaultReviewService.addReview(review);
 
-        defaultReviewService.addReview(reviewDto);
-
-        Review expectedReview = new Review();
-        expectedReview.setMovieId(reviewDto.getMovieId());
-        expectedReview.setUser(user);
-        expectedReview.setText(reviewDto.getText());
-
-        verify(mockSecurityService, times(1)).getUserByUuid(reviewDto.getUuid());
-        verify(mockReviewDao, times(1)).addReview(expectedReview);
+        verify(mockReviewDao, times(1)).addReview(review);
     }
 
     private List<Review> getTestReviews() {

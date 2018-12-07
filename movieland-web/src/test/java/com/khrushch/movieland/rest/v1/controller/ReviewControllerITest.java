@@ -3,6 +3,8 @@ package com.khrushch.movieland.rest.v1.controller;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.Review;
+import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,10 +47,16 @@ public class ReviewControllerITest {
         requestCredentialsDto.setEmail("ronald.reynolds66@example.com");
         requestCredentialsDto.setPassword("paco");
 
+        User user = new User();
+        user.setId(3);
+        user.setRole("USER");
+        CurrentUserHolder.setUser(user);
+
         LoginController loginController = wac.getBean(LoginController.class);
         UserCredentialsDto responseCredentials = loginController.doLogin(requestCredentialsDto);
 
         String addMovieJson = "{\"movieId\":1, \"text\":\"added review\"}";
+
 
         MvcResult mvcResult = mockMvc.perform(post("/review")
                 .contentType(MediaType.APPLICATION_JSON)

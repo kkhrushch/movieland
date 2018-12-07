@@ -113,7 +113,7 @@ public class DefaultSecurityServiceTest {
                 .anyMatch(s -> s.getUser().getId() == 1);
         assertTrue(isAuth);
 
-        defaultSecurityService.doLogout("uuid-1");
+        defaultSecurityService.doLogout(user);
         isAuth = DefaultSecurityService.SESSIONS.values().stream()
                 .anyMatch(s -> s.getUser().getId() == 1);
         assertFalse(isAuth);
@@ -134,13 +134,15 @@ public class DefaultSecurityServiceTest {
                 .anyMatch(s -> s.getUser().getId() == 1);
         assertTrue(isAuth);
 
-        defaultSecurityService.doLogout("uuid-2");
+        defaultSecurityService.doLogout(new User());
     }
 
-    @Test(expected = AuthenticationException.class)
+    @Test
     public void testGetUserByUuid_With_NullUuid() {
         DefaultSecurityService defaultSecurityService = new DefaultSecurityService();
-        defaultSecurityService.getUserByUuid(null);
+        User user = defaultSecurityService.getUserByUuid(null);
+
+        assertNull(user);
     }
 
     @Test(expected = AuthenticationException.class)
@@ -153,11 +155,22 @@ public class DefaultSecurityServiceTest {
         defaultSecurityService.getUserByUuid("uuid-INVALID");
     }
 
+    @Test(expected = AuthenticationException.class)
+    public void testGetUserByUuid_With_ValidUuid_And_ExpiredSession() {
+        ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+        User expectedUser = new User();
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+
+        DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
+        User actualUser = defaultSecurityService.getUserByUuid("uuid-1");
+
+    }
+
     @Test
     public void testGetUserByUuid_With_ValidUuid() {
         ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
         User expectedUser = new User();
-        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().minusHours(1)));
+        sessions.put("uuid-1", new Session(expectedUser, LocalDateTime.now().plusHours(1)));
 
         DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
         User actualUser = defaultSecurityService.getUserByUuid("uuid-1");

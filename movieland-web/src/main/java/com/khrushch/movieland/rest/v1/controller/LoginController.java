@@ -1,6 +1,7 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.dto.UserCredentialsDto;
+import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
 import com.khrushch.movieland.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ public class LoginController {
     }
 
     @DeleteMapping("/logout")
-    public void doLogout(@RequestHeader("uuid") String uuid) {
-        securityService.doLogout(uuid);
+    public void doLogout() {
+        securityService.doLogout(CurrentUserHolder.getUser());
     }
 
     @Autowired

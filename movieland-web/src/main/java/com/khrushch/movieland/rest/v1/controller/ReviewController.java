@@ -1,6 +1,8 @@
 package com.khrushch.movieland.rest.v1.controller;
 
-import com.khrushch.movieland.dto.ReviewDto;
+import com.khrushch.movieland.model.Review;
+import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
 import com.khrushch.movieland.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +15,9 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping
-    public void addMovie(@RequestBody ReviewDto reviewDto, @RequestHeader("uuid") String uuid) {
-        reviewDto.setUuid(uuid);
-        reviewService.addReview(reviewDto);
+    public void addMovie(@RequestBody Review review) {
+        review.setUser(CurrentUserHolder.getUser());
+        reviewService.addReview(review);
     }
 
     @Autowired

@@ -11,8 +11,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultSecurityService implements SecurityService {
@@ -56,21 +58,31 @@ public class DefaultSecurityService implements SecurityService {
     }
 
     @Override
-    public void doLogout(String uuid) {
-        Session session = SESSIONS.remove(uuid);
-        if (session == null){
-            throw new AuthenticationException("User not authorized, uuid: " + uuid);
+    public void doLogout(User user) {
+        LocalDateTime now = LocalDateTime.now();
+        List<Session> userSessions = SESSIONS.values().stream()
+                .filter(s -> s.getUser().getId() == user.getId() && s.getExpirationTime().isAfter(now))
+                .collect(Collectors.toList());
+
+        if(userSessions.size() == 0){
+            throw new AuthenticationException("User not authorized, userId: " + user.getId());
         }
+
+        SESSIONS.entrySet().removeIf(e -> userSessions.contains(e.getValue()));
     }
 
     public User getUserByUuid(String uuid) {
         if (uuid == null) {
-            throw new AuthenticationException("UUID is null");
+            return null;
         }
+
         Session session = SESSIONS.get(uuid);
-        if (session == null) {
-            throw new AuthenticationException("Unauthorized, uuid: " + uuid);
+        if(session == null){
+            throw new AuthenticationException("Invalid UUID: " + uuid);
+        } else if(session.getExpirationTime().isBefore(LocalDateTime.now())){
+            throw new AuthenticationException("Session expired, uuid: " + uuid);
         }
+
         return session.getUser();
     }
 

@@ -6,7 +6,7 @@ import com.khrushch.movieland.model.User;
 public interface SecurityService {
     UserCredentialsDto doLogin(UserCredentialsDto userCredentials);
 
-    void doLogout(String uuid);
+    void doLogout(User user);
 
     User getUserByUuid(String uuid);
 }
