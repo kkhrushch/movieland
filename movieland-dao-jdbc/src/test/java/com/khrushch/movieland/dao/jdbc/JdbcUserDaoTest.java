@@ -20,7 +20,7 @@ public class JdbcUserDaoTest {
         User expectedUser = new User();
         expectedUser.setId(0);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole(new UserRole("aRole"));
+        expectedUser.setRole("aRole");
         expectedUser.setPassword("aPassword");
 
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);

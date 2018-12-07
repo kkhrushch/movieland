@@ -16,7 +16,7 @@ public class DefaultUserServiceTest {
         User expectedUser = new User();
         expectedUser.setId(0);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole(new UserRole("aRole"));
+        expectedUser.setRole("aRole");
         expectedUser.setPassword("aPassword");
 
         UserDao mockUserDao = mock(UserDao.class);
