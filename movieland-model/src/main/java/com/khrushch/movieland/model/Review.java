@@ -1,6 +1,5 @@
 package com.khrushch.movieland.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Objects;
@@ -53,5 +52,15 @@ public class Review {
         return id == review.id &&
                 Objects.equals(user, review.user) &&
                 Objects.equals(text, review.text);
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", movieId=" + movieId +
+                ", user=" + user +
+                ", text='" + text + '\'' +
+                '}';
     }
 }
