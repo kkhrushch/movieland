@@ -3,6 +3,8 @@ package com.khrushch.movieland.service;
 import com.khrushch.movieland.dao.ReviewDao;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.Review;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +12,13 @@ import java.util.List;
 
 @Service
 public class DefaultReviewService implements ReviewService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private ReviewDao reviewDao;
 
     @Override
     public void addReview(Review review) {
+        logger.debug("Adding review: " + review);
         reviewDao.addReview(review);
     }
 
