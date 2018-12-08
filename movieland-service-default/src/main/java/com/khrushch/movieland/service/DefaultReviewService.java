@@ -17,8 +17,10 @@ public class DefaultReviewService implements ReviewService {
     @Override
     public void addReview(Review review) {
         User user = review.getUser();
-        if (user == null || !user.getRole().equals("USER")) {
-            throw new AuthenticationException("Not authorized, userId: " + review.getUser().getId());
+        if (user == null) {
+            throw new AuthenticationException("Not authorized, user not found");
+        } else if (!user.getRole().equals("USER")){
+            throw new AuthenticationException("Not enough privileges");
         }
 
         reviewDao.addReview(review);
