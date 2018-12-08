@@ -2,9 +2,9 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Movie;
-import com.khrushch.movieland.model.Review;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
+import com.khrushch.movieland.holder.CurrentUserHolder;
+import com.khrushch.movieland.model.UserRole;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,7 +48,7 @@ public class ReviewControllerITest {
 
         User user = new User();
         user.setId(3);
-        user.setRole("USER");
+        user.setRole(UserRole.USER);
         CurrentUserHolder.setUser(user);
 
         LoginController loginController = wac.getBean(LoginController.class);

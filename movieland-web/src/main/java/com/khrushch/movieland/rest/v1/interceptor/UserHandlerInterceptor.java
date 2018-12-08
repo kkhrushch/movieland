@@ -1,7 +1,7 @@
 package com.khrushch.movieland.rest.v1.interceptor;
 
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
+import com.khrushch.movieland.holder.CurrentUserHolder;
 import com.khrushch.movieland.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;

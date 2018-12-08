@@ -1,7 +1,7 @@
 package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.dto.UserCredentialsDto;
-import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
+import com.khrushch.movieland.holder.CurrentUserHolder;
 import com.khrushch.movieland.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

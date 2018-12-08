@@ -2,7 +2,8 @@ package com.khrushch.movieland.rest.v1.controller;
 
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
+import com.khrushch.movieland.holder.CurrentUserHolder;
+import com.khrushch.movieland.model.UserRole;
 import com.khrushch.movieland.service.SecurityService;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class LoginControllerTest {
         User user = new User();
         user.setId(1);
         user.setNickname("aNickname");
-        user.setRole("aRole");
+        user.setRole(UserRole.USER);
 
         SecurityService mockSecurityService = mock(SecurityService.class);
 

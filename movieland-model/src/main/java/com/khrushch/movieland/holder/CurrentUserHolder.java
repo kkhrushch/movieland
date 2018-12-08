@@ -1,4 +1,4 @@
-package com.khrushch.movieland.rest.v1.holder;
+package com.khrushch.movieland.holder;
 
 import com.khrushch.movieland.model.User;
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 public class User {
     private long id;
     private String nickname;
-    private String role;
+    private UserRole role;
     private String password;
 
     public User() {
@@ -16,7 +16,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public User(long id, String nickname, String role) {
+    public User(long id, String nickname, UserRole role) {
         this(id, nickname);
         this.role = role;
     }
@@ -29,7 +29,7 @@ public class User {
         return nickname;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
@@ -45,7 +45,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

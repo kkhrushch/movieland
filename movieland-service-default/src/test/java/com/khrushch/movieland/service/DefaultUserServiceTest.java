@@ -2,11 +2,10 @@ package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.UserDao;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.model.security.UserRole;
+import com.khrushch.movieland.model.UserRole;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 public class DefaultUserServiceTest {
@@ -16,7 +15,7 @@ public class DefaultUserServiceTest {
         User expectedUser = new User();
         expectedUser.setId(0);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole("aRole");
+        expectedUser.setRole(UserRole.USER);
         expectedUser.setPassword("aPassword");
 
         UserDao mockUserDao = mock(UserDao.class);
