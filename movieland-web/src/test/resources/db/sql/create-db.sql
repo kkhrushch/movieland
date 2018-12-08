@@ -1,12 +1,13 @@
-CREATE TABLE role_permission
-( id                      int       NOT NULL
+CREATE TABLE role_resource_permission
+( id                      int                NOT NULL
 , role                    varchar(1000)      NOT NULL
-, allowed_url             varchar(1000)      NOT NULL
+, url_pattern             varchar(1000)      NOT NULL
+, http_method             varchar(1000)      NOT NULL
 )
 ;
 
 CREATE TABLE movie_review
-( id                      int    NOT NULL
+( id                      int
 , movie_id                int    NOT NULL
 , app_user_id             int    NOT NULL
 , text                    varchar(1000)      NOT NULL

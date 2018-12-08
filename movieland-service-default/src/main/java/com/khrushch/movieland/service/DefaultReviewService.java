@@ -13,6 +13,11 @@ public class DefaultReviewService implements ReviewService {
     private ReviewDao reviewDao;
 
     @Override
+    public void addReview(Review review) {
+        reviewDao.addReview(review);
+    }
+
+    @Override
     public void enrich(Movie movie) {
         List<Review> reviews = reviewDao.getByMovieId(movie.getId());
         movie.setReviews(reviews);
@@ -22,4 +27,5 @@ public class DefaultReviewService implements ReviewService {
     public void setReviewDao(ReviewDao reviewDao) {
         this.reviewDao = reviewDao;
     }
+
 }
