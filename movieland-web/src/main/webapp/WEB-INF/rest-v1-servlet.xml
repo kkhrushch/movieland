@@ -15,6 +15,7 @@
 
     <mvc:interceptors>
         <bean id="userInterceptor" class="com.khrushch.movieland.rest.v1.interceptor.UserHandlerInterceptor"/>
+        <bean id="loggingInterceptor" class="com.khrushch.movieland.rest.v1.interceptor.LoggingHandlerInterceptor"/>
     </mvc:interceptors>
 
 </beans>
