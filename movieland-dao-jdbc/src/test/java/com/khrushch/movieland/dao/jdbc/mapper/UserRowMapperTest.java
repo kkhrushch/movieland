@@ -1,7 +1,7 @@
 package com.khrushch.movieland.dao.jdbc.mapper;
 
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.model.security.UserRole;
+import com.khrushch.movieland.model.UserRole;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -18,13 +18,13 @@ public class UserRowMapperTest {
         ResultSet mockResultSet = mock(ResultSet.class);
         when(mockResultSet.getLong("id")).thenReturn(1L);
         when(mockResultSet.getString("nickname")).thenReturn("aNickname");
-        when(mockResultSet.getString("role")).thenReturn("aRole");
+        when(mockResultSet.getString("role")).thenReturn("USER");
         when(mockResultSet.getString("password")).thenReturn("aPassword");
 
         User expectedUser = new User();
         expectedUser.setId(1L);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole("aRole");
+        expectedUser.setRole(UserRole.USER);
         expectedUser.setPassword("aPassword");
 
         UserRowMapper mapper = new UserRowMapper();

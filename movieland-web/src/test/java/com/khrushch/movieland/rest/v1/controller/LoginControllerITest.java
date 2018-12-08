@@ -3,7 +3,7 @@ package com.khrushch.movieland.rest.v1.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.rest.v1.holder.CurrentUserHolder;
+import com.khrushch.movieland.holder.CurrentUserHolder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

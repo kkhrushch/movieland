@@ -1,7 +1,7 @@
 package com.khrushch.movieland.dao.jdbc;
 
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.model.security.UserRole;
+import com.khrushch.movieland.model.UserRole;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +20,7 @@ public class JdbcUserDaoTest {
         User expectedUser = new User();
         expectedUser.setId(0);
         expectedUser.setNickname("aNickname");
-        expectedUser.setRole("aRole");
+        expectedUser.setRole(UserRole.USER);
         expectedUser.setPassword("aPassword");
 
         JdbcTemplate mockJdbcTemplate = mock(JdbcTemplate.class);

@@ -1,6 +1,7 @@
 package com.khrushch.movieland.dao.jdbc.mapper;
 
 import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.model.UserRole;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -13,7 +14,8 @@ public class UserRowMapper implements RowMapper<User> {
         User user = new User();
         user.setId(rs.getLong("id"));
         user.setNickname(rs.getString("nickname"));
-        user.setRole(rs.getString("role"));
+        UserRole role = UserRole.fromString(rs.getString("role"));
+        user.setRole(role);
         user.setPassword(rs.getString("password"));
 
         return user;

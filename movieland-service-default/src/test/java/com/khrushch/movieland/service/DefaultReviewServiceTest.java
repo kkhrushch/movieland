@@ -1,9 +1,11 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.ReviewDao;
+import com.khrushch.movieland.holder.CurrentUserHolder;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.Review;
 import com.khrushch.movieland.model.User;
+import com.khrushch.movieland.model.UserRole;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -43,8 +45,10 @@ public class DefaultReviewServiceTest {
         review.setText("aText");
         User user = new User();
         user.setId(1);
-        user.setRole("USER");
+        user.setRole(UserRole.USER);
         review.setUser(user);
+
+        CurrentUserHolder.setUser(user);
 
         defaultReviewService.addReview(review);
 

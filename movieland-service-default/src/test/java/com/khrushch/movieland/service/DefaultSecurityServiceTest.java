@@ -3,16 +3,12 @@ package com.khrushch.movieland.service;
 import com.khrushch.movieland.dto.UserCredentialsDto;
 import com.khrushch.movieland.model.Session;
 import com.khrushch.movieland.model.User;
-import com.khrushch.movieland.model.security.UserRole;
+import com.khrushch.movieland.model.UserRole;
 import com.khrushch.movieland.service.exception.AuthenticationException;
 import org.junit.Test;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.Assert.*;
@@ -104,7 +100,7 @@ public class DefaultSecurityServiceTest {
         ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
         User user = new User();
         user.setId(1);
-        user.setRole("USER");
+        user.setRole(UserRole.USER);
         sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
 
         DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
@@ -125,7 +121,7 @@ public class DefaultSecurityServiceTest {
         ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
         User user = new User();
         user.setId(1);
-        user.setRole("USER");
+        user.setRole(UserRole.USER);
         sessions.put("uuid-1", new Session(user, LocalDateTime.now().plusHours(1)));
 
         DefaultSecurityService defaultSecurityService = new DefaultSecurityService(sessions);
