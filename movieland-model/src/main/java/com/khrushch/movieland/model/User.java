@@ -1,11 +1,15 @@
 package com.khrushch.movieland.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public class User {
     private long id;
     private String nickname;
+    @JsonIgnore
     private UserRole role;
+    @JsonIgnore
     private String password;
 
     public User() {
