@@ -1,7 +1,6 @@
 package com.khrushch.movieland.service;
 
 import com.khrushch.movieland.dao.MovieDao;
-import com.khrushch.movieland.model.CurrencyCode;
 import com.khrushch.movieland.model.Movie;
 import com.khrushch.movieland.model.request.MovieQueryParam;
 import com.khrushch.movieland.model.request.QueryParam;
@@ -66,39 +65,22 @@ public class DefaultMovieServiceTest {
     @Test
     public void testGetById() {
         QueryParam mockQueryParam = mock(QueryParam.class);
-        when(mockQueryParam.getCurrency()).thenReturn(CurrencyCode.USD);
 
         Movie movie = getTestMovies().get(0);
-        double initialPrice = movie.getPrice();
-        double convertedPrice = 999.9;
 
         MovieDao mockMovieDao = mock(MovieDao.class);
         when(mockMovieDao.getById(1L)).thenReturn(movie);
 
-        GenreService mockGenreService = mock(GenreService.class);
-        CountryService mockCountryService = mock(CountryService.class);
-        ReviewService mockReviewService = mock(ReviewService.class);
-
-        CurrencyService mockCurrencyService = mock(CurrencyService.class);
-        when(mockCurrencyService.convert(initialPrice, CurrencyCode.USD)).thenReturn(convertedPrice);
-
         DefaultMovieService movieService = new DefaultMovieService();
         movieService.setMovieDao(mockMovieDao);
-        movieService.setGenreService(mockGenreService);
-        movieService.setCountryService(mockCountryService);
-        movieService.setReviewService(mockReviewService);
-        movieService.setCurrencyService(mockCurrencyService);
+
+        MovieEnricherService mockMovieEnricherService = mock(MovieEnricherService.class);
+        movieService.setMovieEnricherService(mockMovieEnricherService);
 
         Movie actualMovie = movieService.getById(1L, mockQueryParam);
 
         verify(mockMovieDao, times(1)).getById(1L);
-        verify(mockGenreService, times(1)).enrich(movie);
-        verify(mockCountryService, times(1)).enrich(movie);
-        verify(mockReviewService, times(1)).enrich(movie);
-        verify(mockCurrencyService, times(1)).convert(initialPrice, CurrencyCode.USD);
-        verify(mockQueryParam, atLeastOnce()).getCurrency();
-        assertEquals(movie.getPrice(), convertedPrice, 0.001);
-        movie.setPrice(initialPrice);
+        verify(mockMovieEnricherService, times(1)).enrich(movie, mockQueryParam);
         assertEquals(movie, actualMovie);
     }
 

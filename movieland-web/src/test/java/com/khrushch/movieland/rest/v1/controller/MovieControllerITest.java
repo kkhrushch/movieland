@@ -5,6 +5,7 @@ import com.khrushch.movieland.dao.MovieDao;
 import com.khrushch.movieland.model.*;
 import com.khrushch.movieland.service.CurrencyService;
 import com.khrushch.movieland.service.DefaultMovieService;
+import com.khrushch.movieland.service.ParallelMovieEnricherService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,8 +159,8 @@ public class MovieControllerITest {
         Movie expectedMovie = getTestMovieWithAllFieldsSet();
         when(mockCurrencyService.convert(anyDouble(), any(CurrencyCode.class))).thenReturn(getTestMovieWithAllFieldsSet().getPrice() * usdRate);
 
-        DefaultMovieService mockDefaultMovieService = wac.getBean(DefaultMovieService.class);
-        mockDefaultMovieService.setCurrencyService(mockCurrencyService);
+        ParallelMovieEnricherService movieEnricherService = wac.getBean(ParallelMovieEnricherService.class);
+        movieEnricherService.setCurrencyService(mockCurrencyService);
 
         MvcResult mvcResult = mockMvc.perform(get("/movie/1?currency=Usd"))
                 .andDo(print())
